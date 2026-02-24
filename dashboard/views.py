@@ -1,0 +1,195 @@
+from django.views.generic import TemplateView
+from django.views.generic import DetailView, FormView
+from dashboard.forms import ContactMessageForm
+from .models import (
+    Property, 
+    PropertyAmenity,
+    ExploreCities,
+    BenefitSection,
+    Testimonial,
+    Agent,
+    FAQ,
+    FAQPage,
+    ContactPage,
+    PricingPage,
+    PricingPlan,
+    ServicePage,
+    Service,
+)
+from django.views.generic import ListView
+from django.urls import reverse_lazy
+import math, json
+
+class DashboardView(TemplateView):
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context = {
+            "all_properties": Property.objects.order_by("-created_at")[:6],
+            "apartments": Property.objects.filter(property_type="apartment").order_by("-created_at")[:6],
+            "villas": Property.objects.filter(property_type="villa").order_by("-created_at")[:6],
+            "studios": Property.objects.filter(property_type="studio").order_by("-created_at")[:6],
+            "houses": Property.objects.filter(property_type="townhouse").order_by("-created_at")[:6],
+            "offices": Property.objects.filter(property_type="office").order_by("-created_at")[:6],
+            "top_properties": Property.objects.filter(property_type="office").order_by("-created_at")[:6],
+            "explore_cities": ExploreCities.objects.all().order_by("-id"),
+            "benefit_section": BenefitSection.objects.first(),
+            "services": Service.objects.filter(is_active=True),
+            "testimonial_section": Testimonial.objects.all()[:10],
+            "agents": Agent.objects.filter(is_active=True, is_visble=True)[:4]
+        }
+        return context
+
+
+class AboutUsView(TemplateView):
+    template_name = 'about-us.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context = {
+            "testimonial_section": Testimonial.objects.all()[:3],
+            "agents": Agent.objects.filter(is_active=True, is_visble=True)[:4]
+        }
+        return context
+
+class ContactView(FormView):
+    template_name = "contact.html"
+    form_class = ContactMessageForm
+    success_url = reverse_lazy("contact_us")
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page"] = ContactPage.objects.first()
+        context["faqs"] = FAQ.objects.filter(is_active=True)
+        return context
+
+class PricingView(TemplateView):
+    template_name = "pricing.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page"] = PricingPage.objects.first()
+        context["faqs"] = FAQ.objects.filter(is_active=True)
+        context["plans"] = PricingPlan.objects.all()
+        return context
+
+class PropertyDetailView(DetailView):
+    model = Property
+    template_name = 'property_detail.html'
+    context_object_name = 'property'
+    pk_url_kwarg = 'id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['form'] = ContactMessageForm()
+        amenities = list(PropertyAmenity.objects.filter(property=self.object))
+        total = len(amenities)
+        per_col = math.ceil(total / 3) if total else 0
+        context['amenity_columns'] = [
+            amenities[0:per_col],
+            amenities[per_col:per_col * 2],
+            amenities[per_col * 2:per_col * 3],
+        ]
+        context['latest_properties'] = (
+            Property.objects
+            .exclude(id=self.object.id)
+            .order_by('-created_at')[:5]
+        )
+
+        return context
+
+class PropertyListView(ListView):
+    model = Property
+    template_name = "property_list.html"
+    context_object_name = "properties"
+    paginate_by = 12
+
+    def get_queryset(self):
+        queryset = Property.objects.order_by('-id').all().prefetch_related("images")
+
+        # -------- FILTERS --------
+        status = self.request.GET.get("status")
+        property_type = self.request.GET.get("type")
+        min_price = self.request.GET.get("min_price")
+        max_price = self.request.GET.get("max_price")
+
+        if status:
+            queryset = queryset.filter(property_status=status)
+
+        if property_type:
+            queryset = queryset.filter(property_type=property_type)
+
+        if min_price:
+            queryset = queryset.filter(price__gte=min_price)
+
+        if max_price:
+            queryset = queryset.filter(price__lte=max_price)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["layout"] = self.request.GET.get("layout", "grid")
+
+        properties = Property.objects.filter(
+            latitude__isnull=False,
+            longitude__isnull=False
+        )
+
+        context["map_properties"] = json.dumps([
+            {
+                "id": p.id,
+                "title": p.title,
+                "latitude": p.latitude,
+                "longitude": p.longitude,
+                "price": float(p.price),  # 🔥 FIX
+            }
+            for p in properties
+        ])
+        print(context["map_properties"])
+
+        return context
+
+class FAQView(ListView):
+    model = FAQ
+    template_name = "faq.html"
+    context_object_name = "faq"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page = FAQPage.objects.first()
+        faqs = FAQ.objects.filter(is_active=True)
+
+        categories = {
+            "overview": "Overview",
+            "costs": "Costs and Payments",
+            "safety": "Safety and Security",
+        }
+
+        context = {
+            "page": page,
+            "faqs": faqs,
+            "categories": categories,
+        }
+        return context
+
+class ServiceView(TemplateView):
+    template_name = "service.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page"] = ServicePage.objects.first()
+        context["services"] = Service.objects.filter(is_active=True)
+        context["faqs"] = FAQ.objects.filter(is_active=True)
+        context["testimonial_section"] = Testimonial.objects.all()
+
+        return context
+
+
+# Create your views here.

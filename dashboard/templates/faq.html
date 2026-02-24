@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Page Title -->
+<section class="flat-title-page" {% if page and page.background_image %} style="background-image: url({{ page.background_image.url }});" {% endif %}>
+    <div class="container">
+        <div class="breadcrumb-content">
+            <ul class="breadcrumb">
+                <li><a href="/" class="text-white">Home</a></li>
+                <li class="text-white">/ FAQs</li>
+            </ul>
+            <h1 class="text-center text-white title">
+                {{ page.title }}
+            </h1>
+        </div>
+    </div>
+</section>
+<!-- End Page Title -->
+<section class="flat-section">
+    <div class="container">
+
+        {% for key, label in categories.items %}
+        <div class="tf-faq">
+            <h3 class="fw-8 text-center title">{{ label }}</h3>
+
+            <ul class="box-faq" id="wrapper-{{ key }}">
+
+                {% for faq in faqs %}
+                    {% if faq.category == key %}
+                    <li class="faq-item">
+                        <a href="#accordion-{{ key }}-{{ forloop.counter }}"
+                           class="faq-header collapsed"
+                           data-bs-toggle="collapse"
+                           aria-expanded="false"
+                           aria-controls="accordion-{{ key }}-{{ forloop.counter }}">
+                            {{ faq.question }}
+                        </a>
+
+                        <div id="accordion-{{ key }}-{{ forloop.counter }}"
+                             class="collapse"
+                             data-bs-parent="#wrapper-{{ key }}">
+                            <p class="faq-body">
+                                {{ faq.answer }}
+                            </p>
+                        </div>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+            </ul>
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
+{% endblock %}
