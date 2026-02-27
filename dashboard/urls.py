@@ -24,7 +24,7 @@ urlpatterns = [
     path('properties/<int:id>/', PropertyDetailView.as_view(), name='property-detail'),
 
     path('about-us/', AboutUsView.as_view(), name='about_us'),
-    path('faq/', FAQView.as_view(), name='faq-list'),
+    path('faq/', FAQView.as_view(), name='faq_list'),
     path('contact/', ContactView.as_view(), name='contact_us'),
     path('pricing/', PricingView.as_view(), name='pricing'),
     path('services/', ServiceView.as_view(), name='services'),

@@ -50,66 +50,12 @@
                                         <nav class="main-menu show navbar-expand-md">
                                             <div class="navbar-collapse collapse clearfix" id="navbarSupportedContent">
                                                 <ul class="navigation clearfix">
-                                                    <li class="current"><a href="/">Home</a>
-                                                    <li><a href="/about-us">About us</a>
-                                                    <li><a href="/services">Our Services</a>
-                                                    <li><a href="/pricing">Pricing</a>
-                                                    <li><a href="/contact">Contact Us</a>
-                                                    <li><a href="/faq">FAQs</a>
-                                                    {% comment %} <li class="dropdown2"><a href="#">Listing</a>
-                                                        <ul>
-                                                            <li><a href="property-halfmap-grid.html">Property Half Map
-                                                                    Grid</a></li>
-                                                            <li><a href="property-halfmap-list.html">Property Half Map
-                                                                    List</a></li>
-                                                            <li><a href="topmap-grid.html">Find Topmap Grid</a></li>
-                                                            <li><a href="topmap-list.html">Find Topmap List</a></li>
-                                                            <li><a href="sidebar-grid.html">Find Sidebar Grid</a></li>
-                                                            <li><a href="sidebar-list.html">Find Sidebar List</a></li>
-
-                                                        </ul>
-                                                    </li>
-                                                    <li class="dropdown2"><a href="#">Properties</a>
-                                                        <ul>
-                                                            <li><a href="property-details-v1.html">Property Details
-                                                                    1</a></li>
-                                                            <li><a href="property-details-v2.html">Property Details
-                                                                    2</a></li>
-                                                            <li><a href="property-details-v3.html">Property Details
-                                                                    3</a></li>
-                                                            <li><a href="property-details-v4.html">Property Details
-                                                                    4</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li class="dropdown2"><a href="#">Pages</a>
-                                                        <ul>
-                                                            <li><a href="about-us.html">About Us</a></li>
-                                                            <li><a href="our-service.html">Our Services</a></li>
-                                                            <li><a href="pricing.html">Pricing</a></li>
-                                                            <li><a href="contact.html">Contact Us</a></li>
-                                                            <li><a href="faq.html">FAQs</a></li>
-                                                            <li><a href="privacy-policy.html">Privacy Policy</a></li>
-
-                                                        </ul>
-                                                    </li>
-                                                    <li class="dropdown2"><a href="#">Blog</a>
-                                                        <ul>
-                                                            <li><a href="blog.html">Blog Default</a></li>
-                                                            <li><a href="blog-grid.html">Blog Grid</a></li>
-                                                            <li><a href="blog-detail.html">Blog Post Details</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li class="dropdown2"><a href="#">Dashboard</a>
-                                                        <ul>
-                                                            <li><a href="dashboard.html">Dashboard</a></li>
-                                                            <li><a href="my-property.html">My Properties</a></li>
-                                                            <li><a href="message.html">Message</a></li>
-                                                            <li><a href="my-favorites.html">My Favorites</a></li>
-                                                            <li><a href="reviews.html">Reviews</a></li>
-                                                            <li><a href="my-profile.html">My Profile</a></li>
-                                                            <li><a href="add-property.html">Add Property</a></li>
-                                                        </ul>
-                                                    </li> {% endcomment %} 
+                                                    <li class="{% if request.path == '/' %}current{% endif %}"><a href="{% url 'dashboard' %}">Home</a></li>
+                                                    <li class="{% if request.path == '/about-us/' %}current{% endif %}"><a href="{% url 'about_us' %}">About us</a></li>
+                                                    <li class="{% if request.path == '/services/' %}current{% endif %}"><a href="{% url 'services' %}">Our Services</a></li>
+                                                    <li class="{% if request.path == '/pricing/' %}current{% endif %}"><a href="{% url 'pricing' %}">Pricing</a></li>
+                                                    <li class="{% if request.path == '/contact/' %}current{% endif %}"><a href="{% url 'contact_us' %}">Contact Us</a></li>
+                                                    <li class="{% if request.path == '/faq/' %}current{% endif %}"><a href="{% url 'faq_list' %}">FAQs</a></li>
                                                 </ul>
                                             </div>
                                         </nav>
