@@ -1,5 +1,6 @@
 from django.views.generic import TemplateView
 from django.views.generic import DetailView, FormView
+from django.contrib.auth import authenticate, login
 from dashboard.forms import ContactMessageForm
 from .models import (
     Property, 
@@ -17,7 +18,11 @@ from .models import (
     Service,
 )
 from django.views.generic import ListView
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.views import View
+from .forms import LoginForm
 import math, json
 
 class DashboardView(TemplateView):
@@ -25,7 +30,8 @@ class DashboardView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context = {
+        context.update({
+            "login_form": LoginForm(),
             "all_properties": Property.objects.order_by("-created_at")[:6],
             "apartments": Property.objects.filter(property_type="apartment").order_by("-created_at")[:6],
             "villas": Property.objects.filter(property_type="villa").order_by("-created_at")[:6],
@@ -38,9 +44,42 @@ class DashboardView(TemplateView):
             "services": Service.objects.filter(is_active=True),
             "testimonial_section": Testimonial.objects.all()[:10],
             "agents": Agent.objects.filter(is_active=True, is_visble=True)[:4]
-        }
+        })
+        # context = {
+        #     "login_form": LoginForm(),
+        #     "all_properties": Property.objects.order_by("-created_at")[:6],
+        #     "apartments": Property.objects.filter(property_type="apartment").order_by("-created_at")[:6],
+        #     "villas": Property.objects.filter(property_type="villa").order_by("-created_at")[:6],
+        #     "studios": Property.objects.filter(property_type="studio").order_by("-created_at")[:6],
+        #     "houses": Property.objects.filter(property_type="townhouse").order_by("-created_at")[:6],
+        #     "offices": Property.objects.filter(property_type="office").order_by("-created_at")[:6],
+        #     "top_properties": Property.objects.filter(property_type="office").order_by("-created_at")[:6],
+        #     "explore_cities": ExploreCities.objects.all().order_by("-id"),
+        #     "benefit_section": BenefitSection.objects.first(),
+        #     "services": Service.objects.filter(is_active=True),
+        #     "testimonial_section": Testimonial.objects.all()[:10],
+        #     "agents": Agent.objects.filter(is_active=True, is_visble=True)[:4]
+        # }
         return context
 
+    def post(self, request, *args, **kwargs):
+
+        form = LoginForm(request.POST)
+
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+
+            user = authenticate(request, username=username, password=password)
+            print("user", user)
+
+            if user is not None:
+                login(request, user)
+                return redirect("dashboard")
+
+        context = self.get_context_data()
+        context["login_form"] = form
+        return self.render_to_response(context)
 
 class AboutUsView(TemplateView):
     template_name = 'about-us.html'
@@ -191,5 +230,11 @@ class ServiceView(TemplateView):
 
         return context
 
+
+class LogoutView(View):
+
+    def get(self, request):
+        logout(request)
+        return redirect("about_us")
 
 # Create your views here.
