@@ -179,6 +179,9 @@
   .icon-kit:before {
     content: "\e971";
   }
+  .icon-lock:before {
+    content: "\e952";
+  }
   .icon-carbon:before {
     content: "\e972";
   }
@@ -531,4 +534,23 @@
   .icon-phone-line2:before {
     content: "\e956";
   }
+  .icon-list-dashes:before {
+    content: "\e950";
+  }
+  .icon-grid:before {
+    content: "\e982";
+  }
+  .icon-images:before {
+    content: "\e97e";
+  }
+  .icon-faders:before {
+    content: "\e93a";
+  }
+  .icon-profile:before {
+    content: "\e94c";
+  }
+  .icon-mapPin:before {
+    content: "\e9a4";
+  }
+
   

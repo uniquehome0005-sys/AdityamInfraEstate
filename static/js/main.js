@@ -457,19 +457,25 @@
   }
 
   function calculateLoan(event) {
-      event.preventDefault();
+      if (event) event.preventDefault();
 
-      const total = parseFloat(document.getElementById("totalAmount").value);
-      const months = parseInt(document.getElementById("months").value);
-      const rate = parseFloat(document.getElementById("interestRate").value);
+      const totalEl = document.getElementById("totalAmount");
+      const monthsEl = document.getElementById("months");
+      const rateEl = document.getElementById("interestRate");
+      const outputEl = document.getElementById("monthlyPayment");
 
-      const principal = total;
+      if (!totalEl || !monthsEl || !rateEl || !outputEl) return;
+
+      const total = parseFloat(totalEl.value);
+      const months = parseInt(monthsEl.value);
+      const rate = parseFloat(rateEl.value);
+
       const monthlyRate = rate / 12 / 100;
 
-      const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) /
+      const emi = (total * monthlyRate * Math.pow(1 + monthlyRate, months)) /
                   (Math.pow(1 + monthlyRate, months) - 1);
 
-      document.getElementById("monthlyPayment").innerText =
+      outputEl.innerText =
           "₹" + emi.toLocaleString("en-IN", { maximumFractionDigits: 2 });
   }
   window.onload = () => {

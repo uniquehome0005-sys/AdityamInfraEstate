@@ -28,5 +28,10 @@ urlpatterns = [
     path('contact/', ContactView.as_view(), name='contact_us'),
     path('pricing/', PricingView.as_view(), name='pricing'),
     path('services/', ServiceView.as_view(), name='services'),
+    path("login/", LoginView.as_view(), name="login"),
+    path("register/", RegisterView.as_view(), name="register"),
+    path("logout/", LogoutView.as_view(), name="logout"),
 
+
+    path("add-property/", PropertyAddView.as_view(), name="add_property"),
 ]

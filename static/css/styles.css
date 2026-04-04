@@ -2519,6 +2519,11 @@ label {
 .nav-tab-filter .nav-link-item:hover {
   border-color: #161e2d;
 }
+
+.nav-tab-filter .nav-link-item.active {
+  border-color: #161e2d;
+}
+
 .nav-tab-filter .nav-link-item:hover svg path {
   fill: #161e2d;
 }
@@ -6865,12 +6870,20 @@ label {
 .wrapper-layout .adityam-box {
   margin-bottom: 30px;
 }
-.wrapper-layout.layout-2 .wrap-left {
+.wrapper-layout.layout-2 {
+  display: flex;
   height: calc(100vh - 232px);
-  width: 45%;
+  overflow: hidden;
+}
+.wrapper-layout.layout-2 .wrap-left {
+  width: 65%;
   padding: 30px;
-  padding-bottom: 0;
   padding-top: 0;
+  padding-bottom: 0;  
+  box-sizing: border-box;
+  overflow-y: auto;
+  height: 100%;
+  box-sizing: border-box;
 }
 .wrapper-layout.layout-2 .wrap-left::-webkit-scrollbar {
   width: 8px;
@@ -6879,8 +6892,10 @@ label {
   background: #e4e4e4;
 }
 .wrapper-layout.layout-2 .wrap-right {
-  height: calc(100vh - 232px);
-  width: 54%;
+  width: 35%;
+  height: 100%;
+  position: relative;
+  min-height: 0;
 }
 .wrapper-layout .box-title-listing {
   margin-bottom: 30px;
@@ -8305,7 +8320,7 @@ label {
   display: flex;
 }
 .flat-account .banner-account {
-  max-width: 380px;
+  max-width: 480px;
   width: 100%;
   flex-shrink: 0;
 }
@@ -11410,6 +11425,9 @@ tr {
   .rtl .flat-img-with-text.style-2 .content-left {
     padding-right: 35px;
     padding-left: 0;
+  }
+  .wrapper-layout {
+    flex-direction: row !important;
   }
 }
 @media only screen and (min-width: 1100px) {

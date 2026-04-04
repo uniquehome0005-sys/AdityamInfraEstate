@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="flat-section">
+    <div class="container">
+        <div class="flat-account">
+
+            <!-- Banner -->
+            <div class="banner-account">
+                <img src="{% static 'images/banner/banner-account2.jpg' %}" alt="banner">
+            </div>
+
+            <!-- FORM -->
+            <form class="form-account" method="POST" action="{% url 'register' %}">
+                {% csrf_token %}
+                <div class="box-title text-center wow fadeInUp">
+                    <h3 class="mt-4 title text-primary">Register</h3>
+                    <div class="text-subtitle">Create your account</div>
+                </div>
+                <div class="box">
+                    <!-- EMAIL -->
+                    <fieldset class="box-fieldset">
+                        <label>{{ register_form.email.label }}</label>
+                        <div class="ip-field">
+                            <span class="icon icon-profile"></span>
+                            {{ register_form.email }}
+                        </div>
+                        {% if register_form.email.errors %}
+                            <div class="text-danger">{{ register_form.email.errors.0 }}</div>
+                        {% endif %}
+                    </fieldset>
+
+                    <!-- EMAIL -->
+                    <fieldset class="box-fieldset">
+                        <label>{{ register_form.mobile.label }}</label>
+                        <div class="ip-field">
+                            <span class="icon icon-profile"></span>
+                            {{ register_form.mobile }}
+                        </div>
+                        {% if register_form.mobile.errors %}
+                            <div class="text-danger">{{ register_form.email.errors.0 }}</div>
+                        {% endif %}
+                    </fieldset>
+
+                    <!-- PASSWORD -->
+                    <fieldset class="box-fieldset">
+                        <label>{{ register_form.password.label }}</label>
+                        <div class="ip-field password-wrapper">
+                            <span class="icon icon-lock"></span>
+                            {{ register_form.password }}
+                        </div>
+                        {% if register_form.password.errors %}
+                            <div class="text-danger">{{ register_form.password.errors.0 }}</div>
+                        {% endif %}
+                    </fieldset>
+
+                    <!-- CONFIRM PASSWORD -->
+                    <fieldset class="box-fieldset">
+                        <label>{{ register_form.confirm_password.label }}</label>
+                        <div class="ip-field password-wrapper">
+                            <span class="icon icon-lock"></span>
+                            {{ register_form.confirm_password }}
+                        </div>
+                        {% if register_form.confirm_password.errors %}
+                            <div class="text-danger">{{ register_form.confirm_password.errors.0 }}</div>
+                        {% endif %}
+                    </fieldset>
+
+                    {% if register_form.errors %}
+                    <div class="text-danger">
+                        <ul>
+                            {% for field in register_form %}
+                                {% for error in field.errors %}
+                                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in register_form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+    
+                    <div class="text-forgot text-end">
+                        <a href="#">Forgot password</a>
+                    </div>
+
+                </div>
+
+                <!-- BUTTON -->
+                <div class="box box-btn">
+                    <button type="submit" class="tf-btn primary w-100">Sign Up</button>
+                    <div class="text text-center">
+                        Already have an account?
+                        <a href="{% url 'login' %}" class="text-primary">Sign In</a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

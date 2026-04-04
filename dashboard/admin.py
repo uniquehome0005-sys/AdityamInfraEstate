@@ -21,6 +21,7 @@ from .models import (
     PricingPage,
     ServicePage,
     Service,
+    User,
 )
 
 
@@ -374,3 +375,5 @@ class ServiceAdmin(admin.ModelAdmin):
     list_editable = ('order', 'is_featured')
     search_fields = ('title', 'description')
     ordering = ('order',)
+
+admin.site.register(User)

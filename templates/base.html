@@ -24,6 +24,8 @@
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="{% static 'images/logo/favicon.gif' %}">
     <link rel="apple-touch-icon-precomposed" href="{% static 'images/logo/favicon.gif' %}">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   
 </head>
@@ -62,31 +64,49 @@
                                         <!-- Main Menu End-->
                                     </div>
                                 </div>
-                                <div class="inner-header-right header-account">
-                                    <a href="#modalLogin" data-bs-toggle="modal" class="tf-btn btn-line btn-login">
-                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M13.1251 5C13.1251 5.8288 12.7959 6.62366 12.2099 7.20971C11.6238 7.79576 10.8289 8.125 10.0001 8.125C9.17134 8.125 8.37649 7.79576 7.79043 7.20971C7.20438 6.62366 6.87514 5.8288 6.87514 5C6.87514 4.1712 7.20438 3.37634 7.79043 2.79029C8.37649 2.20424 9.17134 1.875 10.0001 1.875C10.8289 1.875 11.6238 2.20424 12.2099 2.79029C12.7959 3.37634 13.1251 4.1712 13.1251 5ZM3.75098 16.765C3.77776 15.1253 4.44792 13.5618 5.61696 12.4117C6.78599 11.2616 8.36022 10.6171 10.0001 10.6171C11.6401 10.6171 13.2143 11.2616 14.3833 12.4117C15.5524 13.5618 16.2225 15.1253 16.2493 16.765C14.2888 17.664 12.1569 18.1279 10.0001 18.125C7.77014 18.125 5.65348 17.6383 3.75098 16.765Z"
-                                                stroke="black" stroke-width="1.5" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                        </svg>
-                                        Sign in
-                                    </a>
+                                {% if request.user.is_authenticated %}
+                                <div class="header-account inner-header-right">
+                                    <div class="box-avatar dropdown-toggle" data-bs-toggle="dropdown">
+                                        <div class="avatar avt-34 round">
+                                            <img src="/static/images/avatar/default.png" alt="avt">
+                                        </div>
+                                        <p class="name">{{request.user.username}}<span class="icon icon-arr-down"></span></p>
+                                    
+                                        {% comment %} <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="/about-us/">About</a>
+                                        </div> {% endcomment %}
+                                    </div>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="/about-us/">About</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                                        </li>
+                                    </ul>
+
+                                    {% if request.user.is_agent %}
+
                                     <div class="flat-bt-top">
-                                        <a class="tf-btn primary" href="add-property.html">
-                                            <svg width="21" height="20" viewBox="0 0 21 20" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M13.625 14.375V17.1875C13.625 17.705 13.205 18.125 12.6875 18.125H4.5625C4.31386 18.125 4.0754 18.0262 3.89959 17.8504C3.72377 17.6746 3.625 17.4361 3.625 17.1875V6.5625C3.625 6.045 4.045 5.625 4.5625 5.625H6.125C6.54381 5.62472 6.96192 5.65928 7.375 5.72834M13.625 14.375H16.4375C16.955 14.375 17.375 13.955 17.375 13.4375V9.375C17.375 5.65834 14.6725 2.57417 11.125 1.97834C10.7119 1.90928 10.2938 1.87472 9.875 1.875H8.3125C7.795 1.875 7.375 2.295 7.375 2.8125V5.72834M13.625 14.375H8.3125C8.06386 14.375 7.8254 14.2762 7.64959 14.1004C7.47377 13.9246 7.375 13.6861 7.375 13.4375V5.72834M17.375 11.25V9.6875C17.375 8.94158 17.0787 8.22621 16.5512 7.69876C16.0238 7.17132 15.3084 6.875 14.5625 6.875H13.3125C13.0639 6.875 12.8254 6.77623 12.6496 6.60041C12.4738 6.4246 12.375 6.18614 12.375 5.9375V4.6875C12.375 4.31816 12.3023 3.95243 12.1609 3.6112C12.0196 3.26998 11.8124 2.95993 11.5512 2.69876C11.2901 2.4376 10.98 2.23043 10.6388 2.08909C10.2976 1.94775 9.93184 1.875 9.5625 1.875H8.625"
-                                                    stroke="white" stroke-width="1.5" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                            Submit Property
+                                        <a class="tf-btn primary" href="{% url 'add_property' %}">
+                                            Add Property
                                         </a>
                                     </div>
+                                    {% endif %}
+                                </div>
+                                
+                                {% else %}
+                                
+                                <div class="inner-header-right header-account">
+                                    <a href="{% url 'login' %}" class="tf-btn btn-line btn-login">
+                                        <span class="icon-profile"></span> Sign in
+                                    </a>
+                                    <a href="{% url 'register' %}" class="tf-btn btn-line btn-login">
+                                        <span class="icon-profile"></span> Sign up
+                                    </a>
                                 </div>
 
+                                {% endif %}
                                 <div class="mobile-nav-toggler mobile-button"><span></span></div>
 
                             </div>
@@ -104,14 +124,18 @@
                                     width="174" height="44"></a></div>
                         <div class="bottom-canvas">
                             <div class="login-box flex align-center">
-                                <a href="#modalLogin" data-bs-toggle="modal">Login</a>
+                                <a href="{% url 'login' %}" class="tf-btn btn-line btn-login">
+                                    <span class="icon-profile"></span> Sign in
+                                </a>
                                 <span>/</span>
-                                <a href="#modalRegister" data-bs-toggle="modal">Register</a>
+                                <a href="{% url 'register' %}" data-bs-toggle="modal" class="tf-btn btn-line btn-login">
+                                    <span class="icon-profile"></span> Sign up
+                                </a>
                             </div>
                             <div class="menu-outer"></div>
-                            <div class="button-mobi-sell">
+                            {% comment %} <div class="button-mobi-sell">
                                 <a class="tf-btn primary" href="add-property.html">Submit Property</a>
-                            </div>
+                            </div> {% endcomment %}
                             <div class="mobi-icon-box">
                                 <div class="box d-flex align-items-center">
                                     <span class="icon icon-phone2"></span>
@@ -323,162 +347,8 @@
         </svg>
     </div>
 
-    <!-- popup login -->
-    <div class="modal modal-account fade" id="modalLogin">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="flat-account">
-                    <div class="banner-account">
-                        <img src="{% static 'images/banner/banner-account1.jpg' %}" alt="banner">
-                    </div>
-                    <form class="form-account">
-                        <div class="title-box">
-                            <h4>Login</h4>
-                            <span class="close-modal icon-close2" data-bs-dismiss="modal"></span>
-                        </div>
-                        <div class="box">
-                            <fieldset class="box-fieldset">
-                                <label>Account</label>
-                                <div class="ip-field">
-                                    <svg class="icon" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z"
-                                            stroke="#A3ABB0" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <input type="text" class="form-control" placeholder="Your name">
-                                </div>
-                            </fieldset>
-                            <fieldset class="box-fieldset">
-                                <label>Password</label>
-                                <div class="ip-field">
-                                    <svg class="icon" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M12.375 7.875V5.0625C12.375 4.16739 12.0194 3.30895 11.3865 2.67601C10.7535 2.04308 9.89511 1.6875 9 1.6875C8.10489 1.6875 7.24645 2.04308 6.61351 2.67601C5.98058 3.30895 5.625 4.16739 5.625 5.0625V7.875M5.0625 16.3125H12.9375C13.3851 16.3125 13.8143 16.1347 14.1307 15.8182C14.4472 15.5018 14.625 15.0726 14.625 14.625V9.5625C14.625 9.11495 14.4472 8.68573 14.1307 8.36926C13.8143 8.05279 13.3851 7.875 12.9375 7.875H5.0625C4.61495 7.875 4.18573 8.05279 3.86926 8.36926C3.55279 8.68573 3.375 9.11495 3.375 9.5625V14.625C3.375 15.0726 3.55279 15.5018 3.86926 15.8182C4.18573 16.1347 4.61495 16.3125 5.0625 16.3125Z"
-                                            stroke="#A3ABB0" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <input type="text" class="form-control" placeholder="Your password">
-                                </div>
-                                <div class="text-forgot text-end"><a href="#">Forgot password</a></div>
-
-                            </fieldset>
-                        </div>
-                        <div class="box box-btn">
-                            <a href="dashboard.html" class="tf-btn primary w-100">Login</a>
-                            <div class="text text-center">Don’t you have an account? <a href="#modalRegister"
-                                    data-bs-toggle="modal" class="text-primary">Register</a></div>
-                        </div>
-                        <p class="box text-center caption-2">or login with</p>
-                        <div class="group-btn">
-                            <a href="#" class="btn-social">
-                                <img src="{% static 'images/logo/google.jpg' %}" alt="img">
-                                Google
-                            </a>
-                            <a href="#" class="btn-social">
-                                <img src="{% static 'images/logo/fb.jpg' %}" alt="img">
-                                Facebook
-                            </a>
-
-                        </div>
-                    </form>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- popup register -->
-    <div class="modal modal-account fade" id="modalRegister">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="flat-account">
-                    <div class="banner-account">
-                        <img src="{% static 'images/banner/banner-account2.jpg' %}" alt="banner">
-                    </div>
-                    <form class="form-account">
-                        <div class="title-box">
-                            <h4>Register</h4>
-                            <span class="close-modal icon-close2" data-bs-dismiss="modal"></span>
-                        </div>
-                        <div class="box">
-                            <fieldset class="box-fieldset">
-                                <label>User name</label>
-                                <div class="ip-field">
-                                    <svg class="icon" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M13.4869 14.0435C12.9628 13.3497 12.2848 12.787 11.5063 12.3998C10.7277 12.0126 9.86989 11.8115 9.00038 11.8123C8.13086 11.8115 7.27304 12.0126 6.49449 12.3998C5.71594 12.787 5.03793 13.3497 4.51388 14.0435M13.4869 14.0435C14.5095 13.1339 15.2307 11.9349 15.5563 10.6056C15.8818 9.27625 15.7956 7.87934 15.309 6.60014C14.8224 5.32093 13.9584 4.21986 12.8317 3.44295C11.7049 2.66604 10.3686 2.25 9 2.25C7.63137 2.25 6.29508 2.66604 5.16833 3.44295C4.04158 4.21986 3.17762 5.32093 2.69103 6.60014C2.20443 7.87934 2.11819 9.27625 2.44374 10.6056C2.76929 11.9349 3.49125 13.1339 4.51388 14.0435M13.4869 14.0435C12.2524 15.1447 10.6546 15.7521 9.00038 15.7498C7.3459 15.7523 5.74855 15.1448 4.51388 14.0435M11.2504 7.31228C11.2504 7.90902 11.0133 8.48131 10.5914 8.90327C10.1694 9.32523 9.59711 9.56228 9.00038 9.56228C8.40364 9.56228 7.83134 9.32523 7.40939 8.90327C6.98743 8.48131 6.75038 7.90902 6.75038 7.31228C6.75038 6.71554 6.98743 6.14325 7.40939 5.72129C7.83134 5.29933 8.40364 5.06228 9.00038 5.06228C9.59711 5.06228 10.1694 5.29933 10.5914 5.72129C11.0133 6.14325 11.2504 6.71554 11.2504 7.31228Z"
-                                            stroke="#A3ABB0" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <input type="text" class="form-control" placeholder="User name">
-                                </div>
-                            </fieldset>
-                            <fieldset class="box-fieldset">
-                                <label>Email address</label>
-                                <div class="ip-field">
-                                    <svg class="icon" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M16.3125 5.0625V12.9375C16.3125 13.3851 16.1347 13.8143 15.8182 14.1307C15.5018 14.4472 15.0726 14.625 14.625 14.625H3.375C2.92745 14.625 2.49822 14.4472 2.18176 14.1307C1.86529 13.8143 1.6875 13.3851 1.6875 12.9375V5.0625M16.3125 5.0625C16.3125 4.61495 16.1347 4.18573 15.8182 3.86926C15.5018 3.55279 15.0726 3.375 14.625 3.375H3.375C2.92745 3.375 2.49822 3.55279 2.18176 3.86926C1.86529 4.18573 1.6875 4.61495 1.6875 5.0625M16.3125 5.0625V5.24475C16.3125 5.53286 16.2388 5.81618 16.0983 6.06772C15.9578 6.31926 15.7553 6.53065 15.51 6.68175L9.885 10.143C9.61891 10.3069 9.31252 10.3937 9 10.3937C8.68748 10.3937 8.38109 10.3069 8.115 10.143L2.49 6.6825C2.24469 6.5314 2.04215 6.32001 1.90168 6.06847C1.7612 5.81693 1.68747 5.53361 1.6875 5.2455V5.0625"
-                                            stroke="#A3ABB0" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-
-                                    <input type="text" class="form-control" placeholder="Email address">
-                                </div>
-
-                            </fieldset>
-                            <fieldset class="box-fieldset">
-                                <label>Password</label>
-                                <div class="ip-field">
-                                    <svg class="icon" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M12.375 7.875V5.0625C12.375 4.16739 12.0194 3.30895 11.3865 2.67601C10.7535 2.04308 9.89511 1.6875 9 1.6875C8.10489 1.6875 7.24645 2.04308 6.61351 2.67601C5.98058 3.30895 5.625 4.16739 5.625 5.0625V7.875M5.0625 16.3125H12.9375C13.3851 16.3125 13.8143 16.1347 14.1307 15.8182C14.4472 15.5018 14.625 15.0726 14.625 14.625V9.5625C14.625 9.11495 14.4472 8.68573 14.1307 8.36926C13.8143 8.05279 13.3851 7.875 12.9375 7.875H5.0625C4.61495 7.875 4.18573 8.05279 3.86926 8.36926C3.55279 8.68573 3.375 9.11495 3.375 9.5625V14.625C3.375 15.0726 3.55279 15.5018 3.86926 15.8182C4.18573 16.1347 4.61495 16.3125 5.0625 16.3125Z"
-                                            stroke="#A3ABB0" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <input type="password" class="form-control" placeholder="Your password">
-                                </div>
-                            </fieldset>
-                            <fieldset class="box-fieldset">
-                                <label>Confirm password</label>
-                                <div class="ip-field">
-                                    <svg class="icon" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M12.375 7.875V5.0625C12.375 4.16739 12.0194 3.30895 11.3865 2.67601C10.7535 2.04308 9.89511 1.6875 9 1.6875C8.10489 1.6875 7.24645 2.04308 6.61351 2.67601C5.98058 3.30895 5.625 4.16739 5.625 5.0625V7.875M5.0625 16.3125H12.9375C13.3851 16.3125 13.8143 16.1347 14.1307 15.8182C14.4472 15.5018 14.625 15.0726 14.625 14.625V9.5625C14.625 9.11495 14.4472 8.68573 14.1307 8.36926C13.8143 8.05279 13.3851 7.875 12.9375 7.875H5.0625C4.61495 7.875 4.18573 8.05279 3.86926 8.36926C3.55279 8.68573 3.375 9.11495 3.375 9.5625V14.625C3.375 15.0726 3.55279 15.5018 3.86926 15.8182C4.18573 16.1347 4.61495 16.3125 5.0625 16.3125Z"
-                                            stroke="#A3ABB0" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <input type="password" class="form-control" placeholder="Confirm password">
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="box box-btn">
-                            <a href="dashboard.html" class="tf-btn primary w-100">Sign Up</a>
-                            <div class="text text-center">Don’t you have an account? <a href="#modalLogin"
-                                    data-bs-toggle="modal" class="text-primary">Sign In</a></div>
-                        </div>
-                        <p class="box text-center caption-2">or login with</p>
-                        <div class="group-btn">
-                            <a href="#" class="btn-social">
-                                <img src="{% static 'images/logo/google.jpg' %}" alt="img">
-                                Google
-                            </a>
-                            <a href="#" class="btn-social">
-                                <img src="{% static 'images/logo/fb.jpg' %}" alt="img">
-                                Facebook
-                            </a>
-
-                        </div>
-                    </form>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Javascript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <script type="text/javascript" src="/static/js/swiper-bundle.min.js"></script>
