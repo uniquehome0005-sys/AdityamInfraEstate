@@ -28,20 +28,45 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+class PropertyType(models.Model):
+    CATEGORY_CHOICES = [
+        ('residential', 'Residential'),
+        ('commercial', 'Commercial'),
+    ]
+
+    PREFERENCE_CHOICES = [
+        ('sell', 'Sell'),
+        ('rent', 'Rent / Lease'),
+        ('pg', 'PG'),
+    ]
+
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    preference = models.CharField(
+        max_length=50,
+        choices=PREFERENCE_CHOICES,
+        blank=True,
+        null=True,
+        help_text="Optional: if set, this type is only for this preference"
+    )
+
+    def __str__(self):
+        return f"{self.name} ({self.category})"
+
 
 class Property(models.Model):
-    STATUS_CHOICES = (
-        ('rent', 'For Rent'),
-        ('sale', 'For Sale'),
-    )
+    # STATUS_CHOICES = (
+    #     ('rent', 'For Rent'),
+    #     ('sale', 'For Sale'),
+    # )
 
-    TYPE_CHOICES = (
-        ('apartment', 'Apartment'),
-        ('villa', 'Villa'),
-        ('studio', 'Studio'),
-        ('office', 'Office'),
-        ('townhouse', 'Townhouse'),
-    )
+    # TYPE_CHOICES = (
+    #     ('apartment', 'Apartment'),
+    #     ('villa', 'Villa'),
+    #     ('studio', 'Studio'),
+    #     ('office', 'Office'),
+    #     ('townhouse', 'Townhouse'),
+    # )
 
     LABEL_CHOICES = (
         ('new', 'New Listing'),
@@ -71,10 +96,8 @@ class Property(models.Model):
     after_price_label = models.CharField(max_length=50, blank=True)
 
     # Property Details
-    property_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
-    property_status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     property_label = models.CharField(max_length=10, choices=LABEL_CHOICES)
-
+    property_types = models.ForeignKey(PropertyType, related_name="types", on_delete=models.CASCADE)
     size_sqft = models.PositiveIntegerField()
     land_area_sqft = models.PositiveIntegerField()
     property_id = models.CharField(max_length=50, unique=True)

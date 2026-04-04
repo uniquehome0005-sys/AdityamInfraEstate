@@ -33,5 +33,7 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
 
 
+    path('api/property-types', property_types),
+
     path("add-property/", PropertyAddView.as_view(), name="add_property"),
 ]

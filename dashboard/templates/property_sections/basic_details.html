@@ -1,0 +1,118 @@
+<div class="widget-box-2 mb-20">
+    <h5 class="title">Basic Details</h5>
+    <div class="box-info-property">
+        <!-- Preference -->
+        <fieldset class="box-fieldset">
+            <div class="text-btn mb-16"><label>I'm looking to:<span>*</span></label></div>
+            <div class="wd-chart">
+                <div class="wd-filter-date">
+                    <div class="left option-group" id="preference">
+                        <div class="dates active" data-value="sell">Sell</div>
+                        <div class="dates" data-value="rent">Rent / Lease</div>
+                        <div class="dates" data-value="pg">PG</div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Category -->
+        <div class="box-radio-check">
+            <div class="text-btn mb-16"><label>What kind of property do you have?<span>*</span></label></div>
+            <fieldset class="fieldset-radio">
+                <input type="radio" name="category" id="residential" value="residential" checked>
+                <label for="residential" class="text-radio">Residential</label>
+
+                <input type="radio" name="category" id="commercial" value="commercial">
+                <label for="commercial" class="text-radio">Commercial</label>
+            </fieldset>
+        </div>
+
+        <!-- Property Types -->
+        <fieldset class="box-fieldset">
+            <div class="text-btn mb-16"><label>Property Type:<span>*</span></label></div>
+            <div class="wd-chart">
+                <div class="wd-filter-date">
+                    <div id="property-types" class="option-group left"></div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<script>
+    const prefBtns = document.querySelectorAll("#preference .dates");
+    const categoryInputs = document.querySelectorAll("input[name='category']");
+    const typeContainer = document.getElementById("property-types");
+
+    let selectedPreference = "sell";
+    let selectedCategory = "residential";
+
+    // Fetch property types from Django API
+    async function fetchPropertyTypes() {
+        try {
+            const response = await fetch(
+                `/api/property-types?preference=${selectedPreference}&category=${selectedCategory}`
+            );
+            const data = await response.json();
+
+            renderTypes(data.types);
+        } catch (err) {
+            console.error("API Error:", err);
+            typeContainer.innerHTML = "<div class='dates'>Error loading property types</div>";
+        }
+    }
+
+    // Render property types
+    function renderTypes(types) {
+        typeContainer.innerHTML = "";
+        types.forEach(type => {
+            const div = document.createElement("div");
+            div.className = "dates";
+            div.innerText = type;
+
+            div.addEventListener("click", () => {
+                document.querySelectorAll("#property-types .dates")
+                    .forEach(el => el.classList.remove("active"));
+                div.classList.add("active");
+            });
+
+            typeContainer.appendChild(div);
+        });
+    }
+
+    // Handle preference clicks
+    prefBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            prefBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            selectedPreference = btn.dataset.value;
+
+            const commercialInput = document.getElementById("commercial");
+
+            // PG disables commercial
+            if (selectedPreference === "pg") {
+                commercialInput.disabled = true;
+                commercialInput.checked = false;
+
+                document.getElementById("residential").checked = true;
+                selectedCategory = "residential";
+            } else {
+                commercialInput.disabled = false;
+            }
+
+            fetchPropertyTypes();
+        });
+    });
+
+    // Handle category change
+    categoryInputs.forEach(input => {
+        input.addEventListener("change", () => {
+            selectedCategory = input.value;
+            fetchPropertyTypes();
+        });
+    });
+
+    // Initial load
+    fetchPropertyTypes();
+</script>

@@ -1,0 +1,67 @@
+<div class="widget-box-2 mb-20">
+    <h5 class="title">Upload Media</h5>
+    <div class="box-uploadfile text-center">
+        <div class="uploadfile">
+            <div class="btn-upload tf-btn primary">
+                <span class="icon-file-text"></span>
+                Select photos
+                <input type="file" id="fileInput" class="ip-file" multiple accept="image/*">
+            </div>
+            <p class="file-name fw-5">
+                or drag photos here <br>
+                <span></span>
+            </p>
+        </div>
+    </div>
+    <div class="box-img-upload" id="previewContainer"></div>
+</div>
+
+<script>
+    const fileInput = document.getElementById("fileInput");
+    const previewContainer = document.getElementById("previewContainer");
+    let selectedFiles = [];
+    fileInput.addEventListener("change", function (e) {
+        const files = Array.from(e.target.files);
+        files.forEach(file => {
+            if (!file.type.startsWith("image/")) return;
+            selectedFiles.push(file);
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const div = document.createElement("div");
+                div.classList.add("item-upload");
+                div.innerHTML = `
+                    <img src="${event.target.result}" />
+                    <span class="icon icon-trash remove-file"></span>
+                `;
+                div.querySelector(".remove-file").addEventListener("click", function () {
+                    div.remove();
+                });
+    
+                previewContainer.appendChild(div);
+            };
+    
+            reader.readAsDataURL(file);
+        });
+        fileInput.value = "";
+    });
+    const uploadBox = document.querySelector(".uploadfile");
+    
+    uploadBox.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadBox.style.border = "2px dashed #007bff";
+    });
+    
+    uploadBox.addEventListener("dragleave", () => {
+        uploadBox.style.border = "";
+    });
+    
+    uploadBox.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadBox.style.border = "";
+    
+        const files = Array.from(e.dataTransfer.files);
+    
+        fileInput.files = e.dataTransfer.files;
+        fileInput.dispatchEvent(new Event("change"));
+    });
+</script>

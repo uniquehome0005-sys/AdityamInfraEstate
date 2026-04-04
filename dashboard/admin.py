@@ -10,6 +10,7 @@ from .models import (
     ExploreCities,
     Benefit,
     BenefitSection,
+    PropertyType,
     Testimonial,
     FAQPage,
     FAQ,
@@ -56,16 +57,16 @@ class PropertyAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "property_id",
-        "property_type",
-        "property_status",
+        # "property_type",
+        # "property_status",
         "price",
         "user",
         "created_at",
     )
 
     list_filter = (
-        "property_type",
-        "property_status",
+        # "property_type",
+        # "property_status",
         "property_label",
         "country",
         "state",
@@ -375,5 +376,11 @@ class ServiceAdmin(admin.ModelAdmin):
     list_editable = ('order', 'is_featured')
     search_fields = ('title', 'description')
     ordering = ('order',)
+
+@admin.register(PropertyType)
+class PropertyTypeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'preference')
+    list_filter = ('category', 'preference')
+    search_fields = ('name',)
 
 admin.site.register(User)

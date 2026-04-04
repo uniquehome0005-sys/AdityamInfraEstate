@@ -8,6 +8,7 @@ from .models import (
     PropertyAmenity,
     ExploreCities,
     BenefitSection,
+    PropertyType,
     Testimonial,
     Agent,
     FAQ,
@@ -35,12 +36,12 @@ class DashboardView(TemplateView):
         # duplicate_property()
         context.update({
             "all_properties": Property.objects.order_by("-created_at")[:6],
-            "apartments": Property.objects.filter(property_type="apartment").order_by("-created_at")[:6],
-            "villas": Property.objects.filter(property_type="villa").order_by("-created_at")[:6],
-            "studios": Property.objects.filter(property_type="studio").order_by("-created_at")[:6],
-            "houses": Property.objects.filter(property_type="townhouse").order_by("-created_at")[:6],
-            "offices": Property.objects.filter(property_type="office").order_by("-created_at")[:6],
-            "top_properties": Property.objects.filter(property_type="office").order_by("-created_at")[:6],
+            "apartments": Property.objects.filter(property_types__name="apartment").order_by("-created_at")[:6],
+            "villas": Property.objects.filter(property_types__name="villa").order_by("-created_at")[:6],
+            "studios": Property.objects.filter(property_types__name="studio").order_by("-created_at")[:6],
+            "houses": Property.objects.filter(property_types__name="townhouse").order_by("-created_at")[:6],
+            "offices": Property.objects.filter(property_types__name="office").order_by("-created_at")[:6],
+            "top_properties": Property.objects.filter(property_types__name="office").order_by("-created_at")[:6],
             "explore_cities": ExploreCities.objects.all().order_by("-id"),
             "benefit_section": BenefitSection.objects.first(),
             "services": Service.objects.filter(is_active=True),
@@ -130,7 +131,7 @@ class PropertyListView(ListView):
             queryset = queryset.filter(property_status=status)
 
         if property_type:
-            queryset = queryset.filter(property_type=property_type)
+            queryset = queryset.filter(property_types__name=property_type)
 
         if min_price:
             queryset = queryset.filter(price__gte=min_price)
@@ -263,5 +264,24 @@ class PropertyAddView(TemplateView):
         context["testimonial_section"] = Testimonial.objects.all()
 
         return context
+
+from django.http import JsonResponse
+from django.db.models import Q
+
+def property_types(request):
+    preference = request.GET.get('preference', 'sell').lower()
+    category = request.GET.get('category', 'residential').lower()
+    if preference == "pg": category = "residential"
+    types_qs = PropertyType.objects.filter(category=category)    
+    types_qs = PropertyType.objects.filter(category=category).filter(
+        Q(preference__isnull=True) | Q(preference=preference)
+    )
+    types_list = list(types_qs.values_list('name', flat=True))
+    return JsonResponse({
+        "success": True,
+        "preference": preference,
+        "category": category,
+        "types": types_list
+    })
 
 # Create your views here.
