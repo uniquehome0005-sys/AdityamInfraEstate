@@ -1,0 +1,115 @@
+<div class="widget-box-2 mb-20">
+    <h5 class="title">Location</h5>
+    <div class="box-info-property">
+        <div class="box grid-3 gap-30">
+            <fieldset class="box-fieldset">
+                <label>House No:<span>*</span></label>
+                <input type="text" class="form-control" placeholder="Enter property full address">
+            </fieldset>
+            <fieldset class="box-fieldset">
+                <label>Address:<span>*</span></label>
+                <input type="text" class="form-control" placeholder="Enter property full address">
+            </fieldset>
+            <fieldset class="box-fieldset">
+                <label>Locality:<span>*</span></label>
+                <input type="text" class="form-control" placeholder="Enter city name">
+            </fieldset>
+        </div>
+        <div class="box grid-3 gap-30">
+            <fieldset class="box-fieldset">
+                <label>Landmark:<span>*</span></label>
+                <input type="text" class="form-control" placeholder="Enter property address">
+            </fieldset>
+            <fieldset class="box-fieldset">
+                <label>City:<span>*</span></label>
+                <input type="text" class="form-control" placeholder="Enter city name">
+            </fieldset>
+            <fieldset class="box-fieldset">
+                <label>
+                    Pin Code:<span>*</span>
+                </label>
+                <input type="text" class="form-control" placeholder="Enter property pin code">
+            </fieldset>
+        </div>
+        <div class="box grid-2 gap-30">
+            <fieldset class="box-fieldset">
+                <label>
+                    Province/State:<span>*</span>
+                </label>
+                <div class="nice-select" tabindex="0"><span class="current">Rajasthan</span>
+                    <ul class="list">
+                        <li data-value="andhra-pradesh" class="option">Andhra Pradesh</li>
+                        <li data-value="arunachal-pradesh" class="option">Arunachal Pradesh</li>
+                        <li data-value="assam" class="option">Assam</li>
+                        <li data-value="bihar" class="option">Bihar</li>
+                        <li data-value="chhattisgarh" class="option">Chhattisgarh</li>
+                        <li data-value="goa" class="option">Goa</li>
+                        <li data-value="gujarat" class="option">Gujarat</li>
+                        <li data-value="haryana" class="option">Haryana</li>
+                        <li data-value="himachal-pradesh" class="option">Himachal Pradesh</li>
+                        <li data-value="jharkhand" class="option">Jharkhand</li>
+                        <li data-value="karnataka" class="option">Karnataka</li>
+                        <li data-value="kerala" class="option">Kerala</li>
+                        <li data-value="madhya-pradesh" class="option">Madhya Pradesh</li>
+                        <li data-value="maharashtra" class="option">Maharashtra</li>
+                        <li data-value="manipur" class="option">Manipur</li>
+                        <li data-value="meghalaya" class="option">Meghalaya</li>
+                        <li data-value="mizoram" class="option">Mizoram</li>
+                        <li data-value="nagaland" class="option">Nagaland</li>
+                        <li data-value="odisha" class="option">Odisha</li>
+                        <li data-value="punjab" class="option">Punjab</li>
+                        <li data-value="rajasthan" class="option selected">Rajasthan</li>
+                        <li data-value="sikkim" class="option">Sikkim</li>
+                        <li data-value="tamil-nadu" class="option">Tamil Nadu</li>
+                        <li data-value="telangana" class="option">Telangana</li>
+                        <li data-value="tripura" class="option">Tripura</li>
+                        <li data-value="uttar-pradesh" class="option">Uttar Pradesh</li>
+                        <li data-value="uttarakhand" class="option">Uttarakhand</li>
+                        <li data-value="west-bengal" class="option">West Bengal</li>
+                    </ul>
+                </div>
+            </fieldset>
+            <fieldset class="box-fieldset">
+                <label>
+                    Country:<span>*</span>
+                </label>
+                <div class="nice-select" tabindex="0"><span class="current">India</span>
+                    <ul class="list">
+                        <li data-value="india" class="option selected">India</li>
+                    </ul>
+                </div>
+            </fieldset>
+        </div>
+        <div class="box box-fieldset">
+            <div class="box grid-2 gap-30">
+                <fieldset class="box-fieldset">
+                    <label>Latitude:<span>*</span></label>
+                    <input type="text" id="latitude" placeholder="Latitude" class="form-control" value="26.9124">
+                </fieldset>
+                <fieldset class="box-fieldset">
+                    <label>Longitude:<span>*</span></label>
+                    <input type="text" id="longitude" placeholder="Longitude" class="form-control" value="75.7873">
+                </fieldset>
+            </div>
+            <!-- MAP -->
+            <iframe id="mapFrame" class="map" src="https://www.google.com/maps?q=26.9124,75.7873&z=14&output=embed" height="456" style="border:0; width:100%;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateMap() {
+        const lat = document.getElementById("latitude").value;
+        const lng = document.getElementById("longitude").value;
+    
+        if (!lat || !lng) return;
+    
+        const mapUrl = `https://www.google.com/maps?q=${lat},${lng}&z=14&output=embed`;
+        document.getElementById("mapFrame").src = mapUrl;
+    }
+    window.onload = function () {
+        updateMap();
+    };
+    document.getElementById("latitude").addEventListener("input", updateMap);
+    document.getElementById("longitude").addEventListener("input", updateMap);
+</script>

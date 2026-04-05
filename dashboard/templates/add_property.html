@@ -8,9 +8,12 @@
         <span class="body-1">Show Dashboard</span>
     </div>
     {% include "property_sections/basic_details.html" %}
-    {% comment %} {% include "property_sections/location_details.html" %}
-    {% include "property_sections/location_details.html" %} {% endcomment %}
+    {% include "property_sections/location_details.html" %}
     {% include "property_sections/upload_details.html" %}
+    {% include "property_sections/property_details.html" %}
+    {% include "property_sections/floor_plans.html" %}
+    {% include "property_sections/amenities_details.html" %}
+
     <div class="box-btn">
         <a href="#" class="tf-btn primary">Add Property</a>
         <a href="#" class="tf-btn btn-line">Save &amp; Preview</a>
