@@ -16,33 +16,53 @@
     <div class="box-img-upload" id="previewContainer"></div>
 </div>
 <div class="widget-box-2 mb-20">
-    <h5 class="title">Virtual Tour 360</h5>
+    <h5 class="title">Virtual Tour </h5>
+
     <div class="box-radio-check">
         <div class="text-btn mb-16">Virtual Tour Type:</div>
+
         <fieldset class="fieldset-radio">
-            <input type="radio" class="tf-checkbox style-1" name="radio" id="radio1" checked="">
-            <label for="radio1" class="text-radio">Embedded code</label>
+            <input type="radio" name="video_type" value="auto" id="radio1" checked>
+            <label for="radio1">Auto video</label>
         </fieldset>
+
         <fieldset class="fieldset-radio">
-            <input type="radio" class="tf-checkbox style-1" name="radio" id="radio2">
-            <label for="radio2" class="text-radio">Upload image</label>
+            <input type="radio" name="video_type" value="upload" id="radio2">
+            <label for="radio2">Upload video</label>
         </fieldset>
     </div>
-    <fieldset class="box-fieldset">
-        <label>Embedded Code Virtual 360</label>
-        <textarea class="textarea"></textarea>
-    </fieldset>
-    <h5 class="title">Videos</h5>
-    <fieldset class="box-fieldset">
-        <label class="text-btn">Video URL:</label>
-        <input type="text" class="form-control" placeholder="Youtube, vimeo url">
+
+    <!-- Upload Video (hidden by default) -->
+    <fieldset class="box-fieldset" id="uploadField" style="display:none;">
+        <label>Upload Video:</label>
+        <input type="file" name="video_file" accept="video/*">
     </fieldset>
 </div>
 
 <script>
+    const radioAuto = document.getElementById("radio1");
+    const radioUpload = document.getElementById("radio2");
+    const uploadField = document.getElementById("uploadField");
+    const videoInput = document.querySelector("input[name='video_file']");
     const fileInput = document.getElementById("fileInput");
     const previewContainer = document.getElementById("previewContainer");
     let selectedFiles = [];
+
+    uploadField.style.display = radioUpload.checked ? "block" : "none";
+    radioAuto.addEventListener("change", function () {
+        if (this.checked) {
+            uploadField.style.display = "none";
+            if (videoInput) {
+                videoInput.value = "";
+            }
+        }
+    });
+    radioUpload.addEventListener("change", function () {
+        if (this.checked) {
+            uploadField.style.display = "block";
+        }
+    });
+
     fileInput.addEventListener("change", function (e) {
         const files = Array.from(e.target.files);
         files.forEach(file => {

@@ -5,11 +5,11 @@
             <label>
                 Title:<span>*</span>
             </label>
-            <input type="text" class="form-control" placeholder="Choose">
+            <input type="text" class="form-control" placeholder="Title" name="title">
         </fieldset>
         <fieldset class="box box-fieldset">
             <label>Description:</label>
-            <textarea class="textarea" placeholder="Your Decscription"></textarea>
+            <textarea class="textarea" placeholder="Your Decscription" name="description"></textarea>
         </fieldset>
         <!-- Preference -->
         <fieldset class="box-fieldset">
@@ -56,6 +56,9 @@
 
     let selectedPreference = "sell";
     let selectedCategory = "residential";
+    let selectedPropertyTypeId = null;
+    let selectedAvailability = "rtm";
+    let selectedOwnership = "freehold";
 
     // Fetch property types from Django API
     async function fetchPropertyTypes() {
@@ -72,18 +75,33 @@
         }
     }
 
+    document.querySelectorAll("#availability .dates").forEach(el => {
+        el.addEventListener("click", () => {
+            selectedAvailability = el.dataset.value;
+        });
+    });
+    
+    document.querySelectorAll("#ownership .dates").forEach(el => {
+        el.addEventListener("click", () => {
+            selectedOwnership = el.dataset.value;
+        });
+    });
+
+
     // Render property types
     function renderTypes(types) {
         typeContainer.innerHTML = "";
-        types.forEach(type => {
+        types.forEach((type, index) => {
             const div = document.createElement("div");
             div.className = "dates";
             div.innerText = type;
+            div.dataset.id = index;
 
             div.addEventListener("click", () => {
                 document.querySelectorAll("#property-types .dates")
                     .forEach(el => el.classList.remove("active"));
                 div.classList.add("active");
+                selectedPropertyTypeId = index;
             });
 
             typeContainer.appendChild(div);

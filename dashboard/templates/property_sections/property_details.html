@@ -1,5 +1,30 @@
 <div class="widget-box-2 mb-20">
     <h5 class="title">Add Area Details</h5>
+    <div class="box grid-4 gap-30">
+        <fieldset class="box-fieldset">
+            <label>Length</label>
+            <input type="number" name="length" id="length_area" class="form-control" placeholder="Length">
+        </fieldset>
+        <fieldset class="box-fieldset">
+            <label>Width</label>
+            <input type="number" name="width" id="width_area" class="form-control" placeholder="Width">
+        </fieldset>
+        <fieldset class="box-fieldset">
+            <label>Area Unit</label>
+            <div class="nice-select" id="length_area_unit" tabindex="0"><span class="current">sq.ft.</span>
+                <ul class="list">
+                    <li data-value="sqft" class="option selected">sq.ft.</li>
+                    <li data-value="sqyard" class="option">sq.yards</li>
+                    <li data-value="sqm" class="option">sq.m.</li>
+                    <li data-value="acre" class="option">acre</li>
+                    <li data-value="marla" class="option">marla</li>
+                    <li data-value="cents" class="option">cents</li>
+                </ul>
+            </div>
+        </fieldset>
+        <p id="areaResult" style="margin-top:10px; font-weight:600;"></p>
+    </div>
+
     <div class="box grid-2 gap-30">
         <fieldset class="box-fieldset">
             <label>Carpet Area</label>
@@ -29,15 +54,15 @@
     <div class="box grid-3 gap-30">
         <fieldset class="box-fieldset">
             <label>No of Bedrooms</label>
-            <input type="number" name="bedrooms" class="form-control" placeholder="No of Bedrooms">
+            <input type="number" name="bedrooms" class="form-control" placeholder="No of Bedrooms" name="bedrooms">
         </fieldset>
         <fieldset class="box-fieldset">
             <label>No of Bathrooms</label>
-            <input type="number" name="bathrooms" class="form-control" placeholder="No of Bathrooms">
+            <input type="number" name="bathrooms" class="form-control" placeholder="No of Bathrooms" name="bathrooms">
         </fieldset>
         <fieldset class="box-fieldset">
             <label>No of Balconies</label>
-            <input type="number" name="balconies" class="form-control" placeholder="No of Balconies">
+            <input type="number" name="balconies" class="form-control" placeholder="No of Balconies" name="balconies">
         </fieldset>
     </div>
 </div>
@@ -46,7 +71,7 @@
     <div class="box grid-2 gap-30">
         <fieldset class="box-fieldset">
             <label>Total Floors</label>
-            <input type="number" name="total_floors" class="form-control" placeholder="Total Floors">
+            <input type="number" name="total_floors" class="form-control" placeholder="Total Floors" name="total_floors">
         </fieldset>
         <fieldset class="box-fieldset">
             <label>Property on Floor</label>
@@ -86,7 +111,7 @@
             <div class="text-btn mb-16"><label>Availability Status:<span>*</span></label></div>
             <div class="wd-chart">
                 <div class="wd-filter-date">
-                    <div class="left option-group" id="preference">
+                    <div class="left option-group" id="availability">
                         <div class="dates active" data-value="rtm">Ready to Move</div>
                         <div class="dates" data-value="construction">Under Construction</div>
                     </div>
@@ -97,7 +122,7 @@
             <div class="text-btn mb-16"><label>Ownership:<span>*</span></label></div>
             <div class="wd-chart">
                 <div class="wd-filter-date">
-                    <div class="left option-group" id="preference">
+                    <div class="left option-group" id="ownership">
                         <div class="dates active" data-value="freehold">Freehold</div>
                         <div class="dates" data-value="leasehold">Leasehold</div>
                         <div class="dates" data-value="cooperative">Co-operative</div>
@@ -124,6 +149,95 @@
 <script>
     document.getElementById("price").addEventListener("input", calculatePrice);
     
+
+    // ==========================
+    // ELEMENTS
+    // ==========================
+    const lengthInput = document.getElementById("length_area");
+    const widthInput = document.getElementById("width_area");
+    const unitBox = document.getElementById("length_area_unit");
+    const resultBox = document.getElementById("areaResult");
+
+    // ==========================
+    // GET SELECTED UNIT
+    // ==========================
+    function getLengthSelectedUnit() {
+        const selected = unitBox.querySelector(".option.selected");
+        return selected ? selected.getAttribute("data-value") : "sqft";
+    }
+
+    // ==========================
+    // UNIT LABEL MAP
+    // ==========================
+    function getUnitLabel(unit) {
+        switch (unit) {
+            case "sqft": return "sq.ft";
+            case "sqyard": return "sq.yards";
+            case "sqm": return "sq.m";
+            case "acre": return "acres";
+            case "marla": return "marla";
+            case "cents": return "cents";
+            default: return "sq.ft";
+        }
+    }
+
+    // ==========================
+    // CONVERT AREA TO SELECTED UNIT
+    // ==========================
+    function convertArea(areaSqft, unit) {
+        switch (unit) {
+            case "sqft":
+                return areaSqft;
+            case "sqyard":
+                return areaSqft / 9;
+            case "sqm":
+                return areaSqft / 10.764;
+            case "acre":
+                return areaSqft / 43560;
+            case "marla":
+                return areaSqft / 272.25;
+            case "cents":
+                return areaSqft / 435.6;
+            default:
+                return areaSqft;
+        }
+    }
+
+    // ==========================
+    // CALCULATE AREA
+    // ==========================
+    function calculateArea() {
+        const length = parseFloat(lengthInput.value);
+        const width = parseFloat(widthInput.value);
+        const unit = getLengthSelectedUnit();
+
+        if (!length || !width) {
+            resultBox.innerHTML = "";
+            return;
+        }
+
+        // base area in sq.ft assumption
+        let areaSqft = length * width;
+
+        // convert to selected unit only
+        let result = convertArea(areaSqft, unit);
+
+        resultBox.innerHTML = `
+            <strong>Area:</strong> ${result.toFixed(2)} ${getUnitLabel(unit)}
+        `;
+    }
+
+    // ==========================
+    // EVENTS
+    // ==========================
+    lengthInput.addEventListener("input", calculateArea);
+    widthInput.addEventListener("input", calculateArea);
+
+    unitBox.addEventListener("click", function (e) {
+        if (e.target.classList.contains("option")) {
+            setTimeout(calculateArea, 100);
+        }
+    });
     function calculatePrice() {
         let price = parseFloat(document.getElementById("price").value) || 0;
         let area = parseFloat(document.querySelector("[name='carpet_area']").value) || 0;

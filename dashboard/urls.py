@@ -36,4 +36,8 @@ urlpatterns = [
     path('api/property-types', property_types),
 
     path("add-property/", PropertyAddView.as_view(), name="add_property"),
+    
+    # path('api/properties/create/', property_create),
+    path("api/properties/create/", CreatePropertyAPIView.as_view(), name="create-property"),
+
 ]

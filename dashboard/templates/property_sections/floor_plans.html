@@ -1,53 +1,54 @@
 <div class="widget-box-2 mb-20">
-    <h5 class="title">Floors</h5>
+    <h5 class="title">Floors Plans</h5>
     <div class="box-radio-check">
         <div class="text-btn mb-16">Enable Floor Plan:</div>
         <fieldset class="fieldset-radio">
-            <input type="radio" class="tf-checkbox style-1" name="radio2" id="radio3" checked="">
-            <label for="radio3" class="text-radio">Enable</label>
+            <input type="radio" name="floor_enable" class="tf-checkbox style-1" id="floor_enable" checked>
+            <label for="floor_enable" class="text-radio">Enable</label>
         </fieldset>
         <fieldset class="fieldset-radio">
-            <input type="radio" class="tf-checkbox style-1" name="radio2" id="radio4">
-            <label for="radio4" class="text-radio">Disable</label>
+            <input type="radio" class="tf-checkbox style-1" name="floor_enable" id="floor_disable">
+            <label for="floor_disable">Disable</label>
         </fieldset>
     </div>
-    <div class="box-floor-property file-delete">
+    <div class="floor-wrapper">
+    <div class="box-floor-property file-delete mb-4">
         <div class="top d-flex justify-content-between align-items-center">
             <h6>Floor 1:</h6>
             <a href="#" class="remove-file"><span class="icon icon-close2"></span></a>
         </div>
         <fieldset class="box box-fieldset">
             <label>Floor Name:</label>
-            <input type="text" class="form-control style-1">
+            <input type="text" name="floor_name" class="form-control style-1">
         </fieldset>
         <div class="grid-2 box gap-30">
             <fieldset class="box-fieldset">
                 <label>Floor Price (Only Digits):</label>
-                <input type="text" class="form-control style-1">
+                <input type="text" name="floor_price" class="form-control style-1">
             </fieldset>
             <fieldset class="box-fieldset">
                 <label>Price Postfix:</label>
-                <input type="text" class="form-control style-1">
+                <input type="text" name="floor_price_postfix" class="form-control style-1">
             </fieldset>
         </div>
         <div class="grid-2 box gap-30">
             <fieldset class="box-fieldset">
                 <label>Floor Size (Only Digits):</label>
-                <input type="text" class="form-control style-1">
+                <input type="text" name="floor_size" class="form-control style-1">
             </fieldset>
             <fieldset class="box-fieldset">
                 <label>Size Postfix:</label>
-                <input type="text" class="form-control style-1">
+                <input type="text" name="floor_size_postfix" class="form-control style-1">
             </fieldset>
         </div>
         <div class="grid-2 box gap-30">
             <fieldset class="box-fieldset">
                 <label>Bedrooms:</label>
-                <input type="text" class="form-control style-1">
+                <input type="text" name="floor_bedrooms" class="form-control style-1">
             </fieldset>
             <fieldset class="box-fieldset">
                 <label>Bathrooms:</label>
-                <input type="text" class="form-control style-1">
+                <input type="text" name="floor_bathrooms" class="form-control style-1">
             </fieldset>
         </div>
         <div class="grid-2 box gap-30">
@@ -55,22 +56,121 @@
                 <label>Floor Image:</label>
                 <div class="box-floor-img uploadfile">
                     <div class="btn-upload tf-btn primary">
-                        <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2.375 13.125L6.67417 8.82583C6.84828 8.65172 7.05498 8.51361 7.28246 8.41938C7.50995 8.32515 7.75377 8.27665 8 8.27665C8.24623 8.27665 8.49005 8.32515 8.71754 8.41938C8.94502 8.51361 9.15172 8.65172 9.32583 8.82583L13.625 13.125M12.375 11.875L13.5492 10.7008C13.7233 10.5267 13.93 10.3886 14.1575 10.2944C14.385 10.2001 14.6288 10.1516 14.875 10.1516C15.1212 10.1516 15.365 10.2001 15.5925 10.2944C15.82 10.3886 16.0267 10.5267 16.2008 10.7008L18.625 13.125M3.625 16.25H17.375C17.7065 16.25 18.0245 16.1183 18.2589 15.8839C18.4933 15.6495 18.625 15.3315 18.625 15V5C18.625 4.66848 18.4933 4.35054 18.2589 4.11612C18.0245 3.8817 17.7065 3.75 17.375 3.75H3.625C3.29348 3.75 2.97554 3.8817 2.74112 4.11612C2.5067 4.35054 2.375 4.66848 2.375 5V15C2.375 15.3315 2.5067 15.6495 2.74112 15.8839C2.97554 16.1183 3.29348 16.25 3.625 16.25ZM12.375 6.875H12.3817V6.88167H12.375V6.875ZM12.6875 6.875C12.6875 6.95788 12.6546 7.03737 12.596 7.09597C12.5374 7.15458 12.4579 7.1875 12.375 7.1875C12.2921 7.1875 12.2126 7.15458 12.154 7.09597C12.0954 7.03737 12.0625 6.95788 12.0625 6.875C12.0625 6.79212 12.0954 6.71263 12.154 6.65403C12.2126 6.59542 12.2921 6.5625 12.375 6.5625C12.4579 6.5625 12.5374 6.59542 12.596 6.65403C12.6546 6.71263 12.6875 6.79212 12.6875 6.875Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
                         Choose File
-                        <input type="file" class="ip-file">
+                        <input type="file" name="floor_image" class="ip-file">
                     </div>
                     <p class="file-name">Or drop file here to upload</p>
                 </div>
             </fieldset>
             <fieldset class="box-fieldset">
                 <label>Description:</label>
-                <textarea class="textarea"></textarea>
+                <textarea name="floor_description" class="textarea"></textarea>
             </fieldset>
         </div>
     </div>
-    <div class="text-center">
-        <a href="#" class="btn-add-floor"><span class="icon icon-plus"></span></a>
+    </div>
+    <div class="text-center box-floor-property-add-button">
+        <a href="#" class="btn-add-floor" id=""><span class="icon icon-plus"></span></a>
     </div>
 </div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const addBtn = document.querySelector(".btn-add-floor");
+        const wrapper = document.querySelector(".floor-wrapper");
+        const maxFloors = 5;
+    
+        function getFloorCount() {
+            return wrapper.querySelectorAll(".box-floor-property").length;
+        }
+    
+        function resetFloorIndexes() {
+            wrapper.querySelectorAll(".box-floor-property").forEach((floor, index) => {
+                const title = floor.querySelector("h6");
+                if (title) title.textContent = `Floor ${index + 1}:`;
+            });
+        }
+    
+        addBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+    
+            const firstFloor = wrapper.querySelector(".box-floor-property");
+    
+            if (!firstFloor) return; // ✅ prevents crash
+    
+            if (getFloorCount() >= maxFloors) {
+                alert("Maximum 5 floor plans allowed.");
+                return;
+            }
+    
+            const clone = firstFloor.cloneNode(true);
+    
+            clone.querySelectorAll("input").forEach(i => i.value = "");
+            clone.querySelectorAll("textarea").forEach(t => t.value = "");
+    
+            const fileText = clone.querySelector(".file-name");
+            if (fileText) fileText.textContent = "Or drop file here to upload";
+    
+            wrapper.appendChild(clone);
+    
+            resetFloorIndexes();
+        });
+    });
+
+    document.addEventListener("click", function (e) {
+        if (e.target.closest(".remove-file")) {
+            e.preventDefault();
+    
+            const floor = e.target.closest(".box-floor-property");
+            if (floor) floor.remove();
+        }
+    });
+    
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const enableRadio = document.getElementById("floor_enable");
+        const disableRadio = document.getElementById("floor_disable");
+        const floorBoxes = document.querySelectorAll(".box-floor-property");
+        const floorAddBtn = document.querySelector(".box-floor-property-add-button");
+    
+        function toggleFloorSection() {
+            const hide = document.getElementById("floor_disable").checked;
+        
+            floorBoxes.forEach(box => {
+                box.style.display = hide ? "none" : "block";
+            });
+        
+            floorAddBtn.style.display = hide ? "none" : "block";
+        }
+    
+        enableRadio.addEventListener("change", toggleFloorSection);
+        disableRadio.addEventListener("change", toggleFloorSection);
+    
+        // initial state
+        toggleFloorSection();
+    });
+
+    function getFloorPlans() {
+        const isEnabled = document.getElementById("floor_enable").checked;
+        if (!isEnabled) return [];
+    
+        const floors = [];
+    
+        document.querySelectorAll(".box-floor-property").forEach(floor => {
+            floors.push({
+                name: floor.querySelector("input[name='floor_name']")?.value || "",
+                price: floor.querySelector("input[name='floor_price']")?.value || "",
+                price_postfix: floor.querySelector("input[name='floor_price_postfix']")?.value || "",
+                size: floor.querySelector("input[name='floor_size']")?.value || "",
+                size_postfix: floor.querySelector("input[name='floor_size_postfix']")?.value || "",
+                bedrooms: floor.querySelector("input[name='floor_bedrooms']")?.value || "",
+                bathrooms: floor.querySelector("input[name='floor_bathrooms']")?.value || "",
+                description: floor.querySelector("textarea[name='floor_description']")?.value || "",
+            });
+        });
+    
+        return floors;
+    }
+</script>

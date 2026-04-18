@@ -52,96 +52,104 @@ class PropertyNearbyInline(admin.TabularInline):
 # Property Admin
 # ----------------------------------
 
-@admin.register(Property)
-class PropertyAdmin(admin.ModelAdmin):
-    list_display = (
-        "title",
-        "property_id",
-        # "property_type",
-        # "property_status",
-        "price",
-        "user",
-        "created_at",
-    )
+# @admin.register(Property)
+# class PropertyAdmin(admin.ModelAdmin):
+#     list_display = (
+#         "title",
+#         # "property_id",
+#         # "property_type",
+#         # "property_status",
+#         "price",
+#         "user",
+#         "created_at",
+#     )
 
-    list_filter = (
-        # "property_type",
-        # "property_status",
-        "property_label",
-        "country",
-        "state",
-        "created_at",
-    )
+#     list_filter = (
+#         # "property_type",
+#         # "property_status",
+#         "property_label",
+#         "country",
+#         "state",
+#         "created_at",
+#     )
 
-    search_fields = (
-        "title",
-        "property_id",
-        "address",
-        "zipcode",
-        "neighborhood",
-    )
+#     search_fields = (
+#         "title",
+#         # "property_id",
+#         "address",
+#         "zipcode",
+#         # "neighborhood",
+#     )
 
-    ordering = ("-created_at",)
+#     ordering = ("-created_at",)
 
-    readonly_fields = ("created_at",)
+#     readonly_fields = ("created_at",)
 
-    inlines = [
-        PropertyImageInline,
-        PropertyAmenityInline,
-        FloorPlanInline,
-        PropertyNearbyInline,  # ✅ ADDED
-    ]
+#     inlines = [
+#         PropertyImageInline,
+#         PropertyAmenityInline,
+#         FloorPlanInline,
+#         PropertyNearbyInline,  # ✅ ADDED
+#     ]
 
-    fieldsets = (
-        ("Owner", {
-            "fields": ("user",)
-        }),
+#     fieldsets = (
+#         ("Owner", {
+#             "fields": ("user",)
+#         }),
 
-        ("Basic Information", {
-            "fields": ("title", "description")
-        }),
+#         ("Basic Information", {
+#             "fields": ("title", "description")
+#         }),
 
-        ("Location", {
-            "fields": (
-                "address",
-                "neighborhood",
-                "state",
-                "country",
-                "zipcode",
-                ("latitude", "longitude"),
-            )
-        }),
+#         ("Location", {
+#             "fields": (
+#                 "address",
+#                 # "neighborhood",
+#                 "state",
+#                 "country",
+#                 "zipcode",
+#                 ("latitude", "longitude"),
+#             )
+#         }),
 
-        ("Pricing", {
-            "fields": (
-                "price",
-                "unit_price",
-                ("before_price_label", "after_price_label"),
-            )
-        }),
+#         ("Pricing", {
+#             "fields": (
+#                 "price",
+#                 # "unit_price",
+#                 ("before_price_label", "after_price_label"),
+#             )
+#         }),
 
-        ("Property Details", {
-            "fields": (
-                ("property_type", "property_status", "property_label"),
-                ("size_sqft", "land_area_sqft"),
-                "property_id",
-                ("rooms", "bedrooms", "bathrooms"),
-                ("garages", "garage_size_sqft"),
-                "year_built",
-            )
-        }),
+#         # ("Property Details", {
+#         #     "fields": (
+#         #         ("property_type", "property_status", "property_label"),
+#         #         ("size_sqft", "land_area_sqft"),
+#         #         "property_id",
+#         #         ("rooms", "bedrooms", "bathrooms"),
+#         #         ("garages", "garage_size_sqft"),
+#         #         "year_built",
+#         #     )
+#         # }),
+#         ("Property Details", {
+#             "fields": (
+#                 ("property_types", "property_label"),
+#                 ( "bedrooms", "bathrooms"),
+#                 # ("garages", "garage_size_sqft"),
+#                 # "year_built",
+#             )
+#         }),
 
-        ("Media", {
-            "fields": (
-                "video_url",
-                "virtual_tour_code",
-            )
-        }),
+#         ("Media", {
+#             "fields": (
+#                 "video_url",
+#                 "virtual_tour_code",
+#             )
+#         }),
 
-        ("System Info", {
-            "fields": ("created_at",),
-        }),
-    )
+#         ("System Info", {
+#             "fields": ("created_at",),
+#         }),
+#     )
 
 
 # ----------------------------------
@@ -384,3 +392,106 @@ class PropertyTypeAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 admin.site.register(User)
+
+from django.contrib import admin
+from .models import Property, PropertyImage, PropertyAmenity, FloorPlan, PropertyNearby
+
+
+@admin.register(Property)
+class PropertyAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "title",
+        "price",
+        "user",
+        "property_label",
+        "availability",
+        "ownership",
+        "created_at",
+    )
+
+    list_filter = (
+        "property_label",
+        "availability",
+        "ownership",
+        "city",
+        "state",
+        "created_at",
+    )
+
+    search_fields = (
+        "title",
+        "address",
+        "locality",
+        "zipcode",
+        "city",
+    )
+
+    ordering = ("-created_at",)
+
+    readonly_fields = ("created_at",)
+
+    inlines = [
+        PropertyImageInline,
+        PropertyAmenityInline,
+        FloorPlanInline,
+        PropertyNearbyInline,
+    ]
+
+    fieldsets = (
+        ("Owner", {
+            "fields": ("user",)
+        }),
+
+        ("Basic Information", {
+            "fields": ("title", "description", "property_label", "property_types")
+        }),
+
+        ("Location", {
+            "fields": (
+                "house_no",
+                "address",
+                "locality",
+                "landmark",
+                "city",
+                "state",
+                "country",
+                "zipcode",
+                ("latitude", "longitude"),
+            )
+        }),
+
+        ("Pricing", {
+            "fields": (
+                "price",
+                "price_per_unit",
+                ("before_price_label", "after_price_label"),
+            )
+        }),
+
+        ("Plot Dimensions", {
+            "fields": ("length", "width"),
+        }),
+
+        ("Property Details", {
+            "fields": (
+                ("carpet_area", "carpet_area_unit"),
+                ("builtup_area", "builtup_area_unit"),
+                ("super_area", "super_area_unit"),
+                ("bedrooms", "bathrooms", "balconies"),
+                "total_floors",
+                "property_on_floor",
+                "availability",
+                "ownership",
+            )
+        }),
+
+        ("Media", {
+            "fields": (
+                # "video_url",
+                # "virtual_tour_code",
+                "video_type",
+                "video_file",
+            )
+        }),
+    )

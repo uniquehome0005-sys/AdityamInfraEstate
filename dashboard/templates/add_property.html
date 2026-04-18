@@ -7,6 +7,8 @@
     <div class="button-show-hide show-mb">
         <span class="body-1">Show Dashboard</span>
     </div>
+    <form id="propertyForm" enctype="multipart/form-data">
+    {% csrf_token %}
     {% include "property_sections/basic_details.html" %}
     {% include "property_sections/location_details.html" %}
     {% include "property_sections/upload_details.html" %}
@@ -15,11 +17,110 @@
     {% include "property_sections/amenities_details.html" %}
 
     <div class="box-btn">
-        <a href="#" class="tf-btn primary">Add Property</a>
+        <button type="submit" class="tf-btn primary">Add Property</button>
         <a href="#" class="tf-btn btn-line">Save &amp; Preview</a>
     </div>
+    </form>
 </div>
 
+<script>
+    function getCSRFToken() {
+        const el = document.querySelector('[name=csrfmiddlewaretoken]');
+        return el ? el.value : "";
+    }
+    
+    document.getElementById("propertyForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+    
+        const formData = new FormData(document.getElementById("propertyForm"));
+        if (!selectedAvailability || !selectedOwnership) {
+            alert("Please select availability and ownership");
+            return;
+        }
+
+        if (!selectedPropertyTypeId || selectedPropertyTypeId === "") {
+            alert("Property type missing");
+            return;
+        }
+        formData.set("property_types", selectedPropertyTypeId);
+        formData.set("property_label", "new");
+        formData.set("availability", selectedAvailability);
+        formData.set("ownership", selectedOwnership);
+
+        const videoTypeInput = document.querySelector("input[name='video_type']:checked");
+    
+        if (!videoTypeInput) {
+            alert("Please select video type");
+            return;
+        }
+    
+        const videoType = videoTypeInput.value;
+        formData.set("video_type", videoType);
+    
+        const videoInput = document.querySelector("input[name='video_file']");
+    
+        if (videoType === "upload") {
+            if (!videoInput || videoInput.files.length === 0) {
+                alert("Please upload a video");
+                return;
+            }
+    
+            const videoFile = videoInput.files[0];
+    
+            const maxSize = 50 * 1024 * 1024;
+            if (videoFile.size > maxSize) {
+                alert("Video must be under 50MB");
+                return;
+            }
+    
+            formData.set("video_file", videoFile);
+        }
+
+        if (typeof selectedFiles !== "undefined") {
+            selectedFiles.forEach(file => {
+                formData.append("images", file);
+            });
+        }
+    
+        document.querySelectorAll("input[name='amenities']:checked")
+            .forEach(el => formData.append("amenities", el.value));
+    
+        // ✅ Floor plans
+        const floors = getFloorPlans() || [];
+        formData.set("floor_plans", JSON.stringify(floors));
+    
+        // Debug
+        console.log("----- FormData -----");
+        for (let pair of formData.entries()) {
+            console.log(pair[0], pair[1]);
+        }
+    
+        fetch("/api/properties/create/", {
+            method: "POST",
+            body: formData,
+            credentials: "same-origin",
+            headers: {
+                "X-CSRFToken": getCSRFToken()
+            }
+        })
+        .then(async res => {
+            const data = await res.json().catch(() => null);
+    
+            if (!res.ok) {
+                console.error("Server error:", data);
+                alert(data?.message || "Error submitting form");
+                return;
+            }
+    
+            console.log(data);
+            alert("Property Added Successfully!");
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Network error");
+        });
+    });
+</script>
 {% endblock %}
 
 {% comment %} 

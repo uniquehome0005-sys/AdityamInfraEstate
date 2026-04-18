@@ -51,26 +51,26 @@ class PropertyType(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name} ({self.category})"
+        return f"{self.name} ({self.category}-{self.preference})"
 
 
 class Property(models.Model):
-    # STATUS_CHOICES = (
-    #     ('rent', 'For Rent'),
-    #     ('sale', 'For Sale'),
-    # )
-
-    # TYPE_CHOICES = (
-    #     ('apartment', 'Apartment'),
-    #     ('villa', 'Villa'),
-    #     ('studio', 'Studio'),
-    #     ('office', 'Office'),
-    #     ('townhouse', 'Townhouse'),
-    # )
 
     LABEL_CHOICES = (
         ('new', 'New Listing'),
         ('open', 'Open House'),
+    )
+
+    AVAILABILITY_CHOICES = (
+        ('rtm', 'Ready to Move'),
+        ('construction', 'Under Construction'),
+    )
+
+    OWNERSHIP_CHOICES = (
+        ('freehold', 'Freehold'),
+        ('leasehold', 'Leasehold'),
+        ('cooperative', 'Co-operative'),
+        ('poa', 'Power of Attorney'),
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -80,39 +80,56 @@ class Property(models.Model):
     description = models.TextField(blank=True)
 
     # Address
+    house_no = models.CharField(max_length=50, blank=True)
     address = models.CharField(max_length=255)
+    locality = models.CharField(max_length=100)
+    landmark = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=100, default="Jaipur")
+    state = models.CharField(max_length=100, default="Rajasthan")
+    country = models.CharField(max_length=100, default="India")
     zipcode = models.CharField(max_length=10)
-    country = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    neighborhood = models.CharField(max_length=100)
 
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
 
     # Pricing
     price = models.DecimalField(max_digits=12, decimal_places=2)
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    price_per_unit = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     before_price_label = models.CharField(max_length=50, blank=True)
     after_price_label = models.CharField(max_length=50, blank=True)
 
     # Property Details
     property_label = models.CharField(max_length=10, choices=LABEL_CHOICES)
     property_types = models.ForeignKey(PropertyType, related_name="types", on_delete=models.CASCADE)
-    size_sqft = models.PositiveIntegerField()
-    land_area_sqft = models.PositiveIntegerField()
-    property_id = models.CharField(max_length=50, unique=True)
 
-    rooms = models.PositiveIntegerField()
-    bedrooms = models.PositiveIntegerField()
-    bathrooms = models.PositiveIntegerField()
+    # Area
+    length = models.FloatField(null=True, blank=True)
+    width = models.FloatField(null=True, blank=True)
+    carpet_area = models.FloatField(null=True, blank=True)
+    builtup_area = models.FloatField(null=True, blank=True)
+    super_area = models.FloatField(null=True, blank=True)
+    carpet_area_unit = models.CharField(max_length=20, default="sqft")
+    builtup_area_unit = models.CharField(max_length=20, null=True, blank=True)
+    super_area_unit = models.CharField(max_length=20, null=True, blank=True)
 
-    garages = models.PositiveIntegerField()
-    garage_size_sqft = models.PositiveIntegerField()
-    year_built = models.PositiveIntegerField()
+    # Rooms
+    bedrooms = models.PositiveIntegerField(default=0)
+    bathrooms = models.PositiveIntegerField(default=0)
+    balconies = models.PositiveIntegerField(default=0)
+
+    # Floor
+    total_floors = models.PositiveIntegerField(null=True, blank=True)
+    property_on_floor = models.CharField(max_length=10, blank=True)
+
+    # Other
+    availability = models.CharField(max_length=20, choices=AVAILABILITY_CHOICES, default='rtm')
+    ownership = models.CharField(max_length=20, choices=OWNERSHIP_CHOICES, default='freehold')
 
     # Media
     video_url = models.URLField(blank=True)
     virtual_tour_code = models.TextField(blank=True)
+    video_type = models.CharField(max_length=10, default="auto")
+    video_file = models.FileField(upload_to="property_videos/", null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 from django.views.generic import DetailView, FormView
 from django.contrib.auth import authenticate, login
 from dashboard.forms import ContactMessageForm
-from dashboard.utils import duplicate_property
+# from dashboard.data import duplicate_property
 from .models import (
     Property, 
     PropertyAmenity,
@@ -283,5 +283,37 @@ def property_types(request):
         "category": category,
         "types": types_list
     })
+
+
+# def property_create(request):
+#     print(request.POST)
+#     files = request.FILES
+
+#     return JsonResponse({
+#         "success": True,
+#     })
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import PropertyType
+from .serializers import PropertySerializer
+
+class CreatePropertyAPIView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()
+        print(data)
+
+        serializer = PropertySerializer(
+            data=data,
+            context={"request": request}
+        )
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response({"message": "Property created successfully"}, status=201)
+        
+        print(serializer.errors)
+        return Response(serializer.errors, status=400)
 
 # Create your views here.
