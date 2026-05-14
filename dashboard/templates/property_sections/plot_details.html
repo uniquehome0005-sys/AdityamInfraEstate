@@ -1,0 +1,192 @@
+<div id="plot-fields" style="display:none;">
+    <div class="widget-box-2 mb-20">
+        <h5 class="title">Tell us about your property</h5>
+
+        <div class="box grid-3 gap-30">
+            <fieldset class="box-fieldset">
+                <label>Length</label>
+                <input type="number" name="length" id="length_area" class="form-control" placeholder="Length">
+            </fieldset>
+            <fieldset class="box-fieldset">
+                <label>Width</label>
+                <input type="number" name="width" id="width_area" class="form-control" placeholder="Width">
+            </fieldset>
+            <fieldset class="box-fieldset">
+                <label>Total Area</label>
+                <div style="display:flex; gap:10px;">
+                    <input 
+                        type="text"
+                        id="plot_area"
+                        class="form-control"
+                        readonly
+                        placeholder="Total Area"
+                    >
+                    <div class="nice-select" id="area_unit" tabindex="0"><span class="current">sq.ft.</span>
+                        <ul class="list">
+                            <li data-value="sqft" class="option selected">sq.ft.</li>
+                            <li data-value="sqyard" class="option">sq.yards</li>
+                            <li data-value="sqm" class="option">sq.m.</li>
+                            <li data-value="acre" class="option">acre</li>
+                            <li data-value="marla" class="option">marla</li>
+                            <li data-value="cents" class="option">cents</li>
+                        </ul>
+                    </div>            
+                </div>
+            </fieldset>
+        </div>
+        <div class="box grid-2 gap-30">
+            <fieldset class="box-fieldset">
+                <label>Floors Allowed for Construction</label>
+                <input type="number" name="floors_allowed" class="form-control" placeholder="Enter allowed floors">
+            </fieldset>
+            <fieldset class="box-fieldset">
+                <label>Possession By</label>
+                <div class="nice-select" tabindex="0"><span class="current">Expected By</span>
+                    <ul class="list">
+                        <li data-value="immediate" class="option">Immediate</li>
+                        <li data-value="within_3_month" class="option">Within 3 month</li>
+                        <li data-value="within_6_month" class="option">Within 6 month</li>
+                        <li data-value="2026" class="option">By 2026</li>
+                        <li data-value="2027" class="option">By 2027</li>
+                        <li data-value="2028" class="option">By 2028</li>
+                    </ul>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="box grid-2 gap-30">
+            <fieldset class="box-fieldset">
+                <div class="text-btn mb-16"><label>No. of Open Sides</label></div>
+                <div class="wd-chart">
+                    <div class="wd-filter-date">
+                        <div class="left option-group" id="open_sides">
+                            <div class="dates" data-value="1">1</div>
+                            <div class="dates" data-value="2">2</div>
+                            <div class="dates" data-value="3">3</div>
+                            <div class="dates" data-value="4">3+</div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="box-fieldset">
+                <div class="text-btn mb-16"><label>Boundary Wall</label></div>
+                <div class="wd-chart">
+                    <div class="wd-filter-date">
+                        <div class="left option-group" id="boundary_wall">
+                            <div class="dates" data-value="yes">Yes</div>
+                            <div class="dates" data-value="no">No</div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <!-- CONDITIONAL -->
+        <div class="box grid-2 gap-30">
+            <fieldset class="box-fieldset">
+                <div class="text-btn mb-16"><label>Is any Construction Done?</label></div>
+                <div class="wd-chart">
+                    <div class="wd-filter-date">
+                        <div class="left option-group" id="construction_done">
+                            <div class="dates" data-value="yes">Yes</div>
+                            <div class="dates" data-value="no">No</div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div id="construction-types" style="display:none;">
+                <fieldset class="box-fieldset">
+                    <div class="text-btn mb-16"><label>Type of Construction</label></div>
+                    <div class="wd-chart">
+                        <div class="wd-filter-date">
+                            <div class="left option-group" id="open_sides">
+                                <div class="dates" data-value="shed">Shed</div>
+                                <div class="dates" data-value="room">Room(s)</div>
+                                <div class="dates" data-value="washroom">Washroom(s)</div>
+                                <div class="dates" data-value="other">Other</div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function getSelectedAreaUnit() {
+        return document.querySelector('#area_unit .option.selected')
+            ?.getAttribute('data-value') || 'sqft';
+    }
+
+    function calculateArea() {
+
+        let length = parseFloat(document.getElementById('length_area').value) || 0;
+        let width = parseFloat(document.getElementById('width_area').value) || 0;
+        let unit = getSelectedAreaUnit();
+        let areaSqFt = length * width;
+        let convertedArea = areaSqFt;
+        let unitLabel = '';
+
+        switch(unit) {
+
+            case 'sqft':
+                convertedArea = areaSqFt;
+                unitLabel = 'Sq Ft';
+                break;
+
+            case 'sqyard':
+                convertedArea = areaSqFt / 9;
+                unitLabel = 'Sq Yard';
+                break;
+
+            case 'sqm':
+                convertedArea = areaSqFt / 10.7639;
+                unitLabel = 'Sq Meter';
+                break;
+
+            case 'acre':
+                convertedArea = areaSqFt / 43560;
+                unitLabel = 'Acre';
+                break;
+
+            case 'marla':
+                convertedArea = areaSqFt / 272.25;
+                unitLabel = 'Marla';
+                break;
+
+            case 'cents':
+                convertedArea = areaSqFt / 435.6;
+                unitLabel = 'Cents';
+                break;
+        }
+
+        convertedArea = convertedArea.toFixed(2);
+
+        document.getElementById('plot_area').value =
+            convertedArea + ' ' + unitLabel;
+    }
+
+    document.getElementById('length_area')
+        .addEventListener('input', calculateArea);
+
+    document.getElementById('width_area')
+        .addEventListener('input', calculateArea);
+
+    document.querySelectorAll('#area_unit .option').forEach(option => {
+
+        option.addEventListener('click', function () {
+
+            document.querySelectorAll('#area_unit .option')
+                .forEach(el => el.classList.remove('selected'));
+
+            this.classList.add('selected');
+
+            document.querySelector('#area_unit .current').innerText =
+                this.innerText;
+
+            calculateArea();
+        });
+    });
+
+</script>

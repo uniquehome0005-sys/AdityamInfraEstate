@@ -1,16 +1,6 @@
 <div class="widget-box-2 mb-20">
     <h5 class="title">Basic Details</h5>
     <div class="box-info-property">
-        <fieldset class="box box-fieldset">
-            <label>
-                Title:<span>*</span>
-            </label>
-            <input type="text" class="form-control" placeholder="Title" name="title">
-        </fieldset>
-        <fieldset class="box box-fieldset">
-            <label>Description:</label>
-            <textarea class="textarea" placeholder="Your Decscription" name="description"></textarea>
-        </fieldset>
         <!-- Preference -->
         <fieldset class="box-fieldset">
             <div class="text-btn mb-16"><label>I'm looking to:<span>*</span></label></div>
@@ -97,11 +87,13 @@
             div.innerText = type;
             div.dataset.id = index;
 
+            div.dataset.type = type.toLowerCase();
             div.addEventListener("click", () => {
                 document.querySelectorAll("#property-types .dates")
                     .forEach(el => el.classList.remove("active"));
                 div.classList.add("active");
                 selectedPropertyTypeId = index;
+                togglePlotFields(div.dataset.type);
             });
 
             typeContainer.appendChild(div);

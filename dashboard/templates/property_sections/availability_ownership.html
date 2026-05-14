@@ -1,0 +1,54 @@
+<div class="widget-box-2 mb-20">
+    <h5 class="title">Availability & Ownership</h5>
+    <div class="box grid-1 gap-30">
+        <fieldset class="box-fieldset">
+            <div class="text-btn mb-16"><label>Availability Status:<span>*</span></label></div>
+            <div class="wd-chart">
+                <div class="wd-filter-date">
+                    <div class="left option-group" id="availability">
+                        <div class="dates active" data-value="rtm">Ready to Move</div>
+                        <div class="dates" data-value="construction">Under Construction</div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="box-fieldset">
+            <div class="text-btn mb-16"><label>Ownership:<span>*</span></label></div>
+            <div class="wd-chart">
+                <div class="wd-filter-date">
+                    <div class="left option-group" id="ownership">
+                        <div class="dates active" data-value="freehold">Freehold</div>
+                        <div class="dates" data-value="leasehold">Leasehold</div>
+                        <div class="dates" data-value="cooperative">Co-operative</div>
+                        <div class="dates" data-value="poa">Power of Attorney</div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="widget-box-2 mb-20">
+    <h5 class="title">Price Details</h5>
+    <div class="box grid-2 gap-30">
+        <fieldset class="box-fieldset">
+            <label>Price per Unit (₹)</label>
+            <input type="number" id="price_per_unit" class="form-control" placeholder="Price per Unit (₹)">
+        </fieldset>
+        <fieldset class="box-fieldset">
+            <label>Expected Price (₹)</label>
+            <input type="number" id="price" name="price" class="form-control" readonly placeholder="Expected Price (₹)">
+        </fieldset>
+    </div>
+</div>
+<div class="widget-box-2 mb-20">
+    <fieldset class="box box-fieldset">
+        <label>
+            Title:<span>*</span>
+        </label>
+        <input type="text" class="form-control" placeholder="Title" name="title">
+    </fieldset>
+    <fieldset class="box box-fieldset">
+        <label>Description:</label>
+        <textarea class="textarea" placeholder="Your Decscription" name="description"></textarea>
+    </fieldset>
+</div>
