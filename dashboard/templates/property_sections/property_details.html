@@ -3,264 +3,547 @@
 {% include "property_sections/availability_ownership.html" %}
 
 <script>
-    document.querySelectorAll('.option-group').forEach(group => {
-        const options = group.querySelectorAll('.dates');
-        options.forEach(option => {
-            option.addEventListener('click', function () {
-                options.forEach(el => el.classList.remove('active'));
-                this.classList.add('active');
-                const value = this.dataset.value;
-                const hiddenInput =
-                    group.parentElement.parentElement.querySelector('input[type="hidden"]');
+    document.addEventListener("DOMContentLoaded", () => {
     
-                if(hiddenInput){
-                    hiddenInput.value = value;
-                }
-                if(group.id === 'construction_done'){
+        // ==========================
+        // OPTION GROUP HANDLER
+        // ==========================
+        document.querySelectorAll(".option-group").forEach(group => {
     
-                    const constructionBox =
-                        document.getElementById('construction-types');
+            const options = group.querySelectorAll(".dates");
     
-                    if(value === 'yes'){
-                        constructionBox.style.display = 'block';
-                    }else{
-                        constructionBox.style.display = 'none';
+            options.forEach(option => {
+    
+                option.addEventListener("click", function () {
+    
+                    options.forEach(el =>
+                        el.classList.remove("active")
+                    );
+    
+                    this.classList.add("active");
+    
+                    const value = this.dataset.value;
+    
+                    const hiddenInput =
+                        group.parentElement.parentElement.querySelector(
+                            'input[type="hidden"]'
+                        );
+    
+                    if (hiddenInput) {
+                        hiddenInput.value = value;
                     }
-                }
+    
+                    // Construction toggle
+                    if (group.id === "construction_done") {
+    
+                        const constructionBox =
+                            document.getElementById("construction-types");
+    
+                        constructionBox.style.display =
+                            value === "yes"
+                                ? "block"
+                                : "none";
+                    }
+                });
             });
         });
-    });
-    document.getElementById("price").addEventListener("input", calculatePrice);
     
-
-    // ==========================
-    // ELEMENTS
-    // ==========================
-    const lengthInput = document.getElementById("length_area");
-    const widthInput = document.getElementById("width_area");
-    const unitBox = document.getElementById("length_area_unit");
-    const resultBox = document.getElementById("areaResult");
-    const plotFields = document.getElementById("plot-fields");
-    const apartmentFields = document.getElementById("apartment-fields");
-    const propertyOnFloor = document.getElementById("property-on-floor");
+        // ==========================
+        // ELEMENTS
+        // ==========================
+        const lengthInput =
+            document.getElementById("length_area");
     
-    function togglePlotFields(type) {
-        if (!type) {
+        const widthInput =
+            document.getElementById("width_area");
+    
+        const areaResult =
+            document.getElementById("areaResult");
+    
+        const plotAreaInput =
+            document.getElementById("plot_area");
+    
+        const carpetAreaInput =
+            document.getElementById("carpet_area");
+    
+        const pricePerUnitInput =
+            document.getElementById("price_per_unit");
+    
+        const totalPriceInput =
+            document.getElementById("price");
+    
+        const pricePerSqftInput =
+            document.getElementById("price_per_sqft");
+    
+        const plotFields =
+            document.getElementById("plot-fields");
+    
+        const apartmentFields =
+            document.getElementById("apartment-fields");
+    
+        const propertyOnFloor =
+            document.getElementById("property-on-floor");
+    
+        const addBtn =
+            document.getElementById("add-area-btn");
+    
+        const container =
+            document.getElementById("extra-areas");
+    
+        // ==========================
+        // AREA OPTIONS
+        // ==========================
+        const areaOptions = [
+            {
+                label: "Built-up Area",
+                name: "builtup_area",
+                unit: "builtup_area_unit"
+            },
+            {
+                label: "Super Built-up Area",
+                name: "super_area",
+                unit: "super_area_unit"
+            }
+        ];
+    
+        let index = 0;
+    
+        // ==========================
+        // UNIT CONVERSION
+        // ==========================
+        const unitConversion = {
+            sqft: 1,
+            sqyard: 9,
+            sqm: 10.7639,
+            acre: 43560,
+            marla: 272.25,
+            cents: 435.6
+        };
+    
+        // ==========================
+        // GET SELECTED UNIT
+        // ==========================
+        function getSelectedUnit(selector = "#area_unit") {
+    
+            return document.querySelector(
+                `${selector} .option.selected`
+            )?.dataset.value || "sqft";
+        }
+    
+        // ==========================
+        // UNIT LABEL
+        // ==========================
+        function getUnitLabel(unit) {
+    
+            switch (unit) {
+    
+                case "sqft":
+                    return "sq.ft";
+    
+                case "sqyard":
+                    return "sq.yards";
+    
+                case "sqm":
+                    return "sq.m";
+    
+                case "acre":
+                    return "acres";
+    
+                case "marla":
+                    return "marla";
+    
+                case "cents":
+                    return "cents";
+    
+                default:
+                    return "sq.ft";
+            }
+        }
+    
+        // ==========================
+        // CONVERT AREA
+        // ==========================
+        function convertArea(areaSqft, unit) {
+    
+            switch (unit) {
+    
+                case "sqft":
+                    return areaSqft;
+    
+                case "sqyard":
+                    return areaSqft / 9;
+    
+                case "sqm":
+                    return areaSqft / 10.7639;
+    
+                case "acre":
+                    return areaSqft / 43560;
+    
+                case "marla":
+                    return areaSqft / 272.25;
+    
+                case "cents":
+                    return areaSqft / 435.6;
+    
+                default:
+                    return areaSqft;
+            }
+        }
+    
+        // ==========================
+        // TOGGLE PROPERTY FIELDS
+        // ==========================
+        function togglePlotFields(type) {
+    
+            if (!type) {
+    
+                plotFields.style.display = "none";
+                apartmentFields.style.display = "none";
+                propertyOnFloor.style.display = "none";
+    
+                return;
+            }
+    
+            type = type.toLowerCase();
+    
             plotFields.style.display = "none";
             apartmentFields.style.display = "none";
             propertyOnFloor.style.display = "none";
-            return;
-        }
-        type = type.toLowerCase();
-        plotFields.style.display = "none";
-        apartmentFields.style.display = "none";
     
-        if (type.includes("plot") || type.includes("land")) {
-            plotFields.style.display = "block";
-        } else if (type.includes("apartment") || type.includes("flat") || type.includes("villa")) {
-            if (type.includes("apartment") || type.includes("flat")){
-                propertyOnFloor.style.display = "block";
+            // Plot / Land
+            if (
+                type.includes("plot") ||
+                type.includes("land")
+            ) {
+    
+                plotFields.style.display = "block";
             }
-            apartmentFields.style.display = "block";
-        }
-    }
-
-    // ==========================
-    // GET SELECTED UNIT
-    // ==========================
-    function getLengthSelectedUnit() {
-        const selected = unitBox.querySelector(".option.selected");
-        return selected ? selected.getAttribute("data-value") : "sqft";
-    }
-
-    // ==========================
-    // UNIT LABEL MAP
-    // ==========================
-    function getUnitLabel(unit) {
-        switch (unit) {
-            case "sqft": return "sq.ft";
-            case "sqyard": return "sq.yards";
-            case "sqm": return "sq.m";
-            case "acre": return "acres";
-            case "marla": return "marla";
-            case "cents": return "cents";
-            default: return "sq.ft";
-        }
-    }
-
-    // ==========================
-    // CONVERT AREA TO SELECTED UNIT
-    // ==========================
-    function convertArea(areaSqft, unit) {
-        switch (unit) {
-            case "sqft":
-                return areaSqft;
-            case "sqyard":
-                return areaSqft / 9;
-            case "sqm":
-                return areaSqft / 10.764;
-            case "acre":
-                return areaSqft / 43560;
-            case "marla":
-                return areaSqft / 272.25;
-            case "cents":
-                return areaSqft / 435.6;
-            default:
-                return areaSqft;
-        }
-    }
-
-    // ==========================
-    // CALCULATE AREA
-    // ==========================
-    function calculateArea() {
-        const length = parseFloat(lengthInput.value);
-        const width = parseFloat(widthInput.value);
-        const unit = getLengthSelectedUnit();
-
-        if (!length || !width) {
-            resultBox.innerHTML = "";
-            return;
-        }
-
-        // base area in sq.ft assumption
-        let areaSqft = length * width;
-
-        // convert to selected unit only
-        let result = convertArea(areaSqft, unit);
-
-        resultBox.innerHTML = `
-            <strong>Area:</strong> ${result.toFixed(2)} ${getUnitLabel(unit)}
-        `;
-    }
-
-    // ==========================
-    // EVENTS
-    // ==========================
-    lengthInput.addEventListener("input", calculateArea);
-    widthInput.addEventListener("input", calculateArea);
-
-    unitBox.addEventListener("click", function (e) {
-        if (e.target.classList.contains("option")) {
-            setTimeout(calculateArea, 100);
-        }
-    });
-    function calculatePrice() {
-        let price = parseFloat(document.getElementById("price").value) || 0;
-        let area = parseFloat(document.querySelector("[name='carpet_area']").value) || 0;
     
-        if (area > 0) {
-            document.getElementById("price_per_sqft").value = (price / area).toFixed(2);
+            // Apartment / Flat / Villa
+            else if (
+                type.includes("apartment") ||
+                type.includes("flat") ||
+                type.includes("villa")
+            ) {
+    
+                apartmentFields.style.display = "block";
+    
+                if (
+                    type.includes("apartment") ||
+                    type.includes("flat")
+                ) {
+    
+                    propertyOnFloor.style.display =
+                        "block";
+                }
+            }
         }
-    }
-
-    const addBtn = document.getElementById("add-area-btn");
-    const container = document.getElementById("extra-areas");
-
-    const areaOptions = [
-        {
-            label: "Built-up Area",
-            name: "builtup_area",
-            unit: "builtup_area_unit"
-        },
-        {
-            label: "Super Built-up Area",
-            name: "super_area",
-            unit: "super_area_unit"
+    
+        // ==========================
+        // CALCULATE AREA
+        // ==========================
+        function calculateArea() {
+    
+            const length =
+                parseFloat(lengthInput?.value) || 0;
+    
+            const width =
+                parseFloat(widthInput?.value) || 0;
+    
+            if (!length || !width) {
+    
+                if (areaResult) {
+                    areaResult.innerHTML = "";
+                }
+    
+                if (plotAreaInput) {
+                    plotAreaInput.value = "";
+                }
+    
+                return;
+            }
+    
+            const unit =
+                getSelectedUnit("#area_unit");
+    
+            // Base area in sqft
+            const areaSqft = length * width;
+    
+            // Converted area
+            const convertedArea =
+                convertArea(areaSqft, unit);
+    
+            // Display area
+            if (areaResult) {
+    
+                areaResult.innerHTML = `
+                    <strong>Area:</strong>
+                    ${convertedArea.toFixed(2)}
+                    ${getUnitLabel(unit)}
+                `;
+            }
+    
+            // Set hidden/input value
+            if (plotAreaInput) {
+    
+                plotAreaInput.value =
+                    `${convertedArea.toFixed(2)}
+                    ${getUnitLabel(unit)}`;
+            }
         }
-    ];
-
-    let index = 0;
-
-    addBtn.addEventListener("click", () => {
-        if (index >= areaOptions.length) {
-            addBtn.disabled = true;
-            addBtn.innerText = "All Areas Added";
-            return;
+    
+        // ==========================
+        // CALCULATE PRICE
+        // ==========================
+        function calculatePrice() {
+    
+            let area = 0;
+    
+            // If Plot / Land selected
+            const isPlotVisible =
+                plotFields.style.display === "block";
+    
+            if (isPlotVisible) {
+    
+                const length =
+                    parseFloat(lengthInput?.value) || 0;
+    
+                const width =
+                    parseFloat(widthInput?.value) || 0;
+    
+                area = length * width;
+    
+            } else {
+    
+                // Apartment/Villa
+                area =
+                    parseFloat(
+                        carpetAreaInput?.value
+                    ) || 0;
+            }
+    
+            // Price per unit
+            const pricePerUnit =
+                parseFloat(
+                    pricePerUnitInput?.value
+                ) || 0;
+    
+            // Total Price
+            const total =
+                area * pricePerUnit;
+    
+            // Set total price
+            if (totalPriceInput) {
+    
+                totalPriceInput.value =
+                    Math.round(total);
+            }
+    
+            // Price per sqft
+            if (
+                pricePerSqftInput &&
+                area > 0
+            ) {
+    
+                pricePerSqftInput.value =
+                    (total / area).toFixed(2);
+            }
         }
-
-        const area = areaOptions[index];
-
-        const html = `
-            <div class="box grid-2 gap-30">
-                <fieldset class="box-fieldset">
-                    <label>${area.label}</label>
-                    <input type="number" name="${area.name}" class="form-control">
-                </fieldset>
-                <fieldset class="box-fieldset">
-                    <label>Area Unit</label>
-                    <div class="nice-select" tabindex="0"><span class="current">sq.ft.</span>
-                        <ul class="list">
-                            <li data-value="sqft" class="option selected">sq.ft.</li>
-                            <li data-value="sqyard" class="option">sq.yards</li>
-                            <li data-value="sqm" class="option">sq.m.</li>
-                            <li data-value="acre" class="option">acre</li>
-                            <li data-value="marla" class="option">marla</li>
-                            <li data-value="cents" class="option">cents</li>
-                        </ul>
+    
+        // ==========================
+        // INPUT EVENTS
+        // ==========================
+        if (lengthInput) {
+    
+            lengthInput.addEventListener(
+                "input",
+                () => {
+    
+                    calculateArea();
+                    calculatePrice();
+                }
+            );
+        }
+    
+        if (widthInput) {
+    
+            widthInput.addEventListener(
+                "input",
+                () => {
+    
+                    calculateArea();
+                    calculatePrice();
+                }
+            );
+        }
+    
+        if (carpetAreaInput) {
+    
+            carpetAreaInput.addEventListener(
+                "input",
+                calculatePrice
+            );
+        }
+    
+        if (pricePerUnitInput) {
+    
+            pricePerUnitInput.addEventListener(
+                "input",
+                calculatePrice
+            );
+        }
+    
+        // ==========================
+        // NICE SELECT HANDLER
+        // ==========================
+        document.querySelectorAll(".nice-select")
+            .forEach(select => {
+    
+                select.querySelectorAll(".option")
+                    .forEach(option => {
+    
+                        option.addEventListener(
+                            "click",
+                            function () {
+    
+                                // Remove selected
+                                select.querySelectorAll(".option")
+                                    .forEach(o =>
+                                        o.classList.remove(
+                                            "selected"
+                                        )
+                                    );
+    
+                                // Add selected
+                                this.classList.add(
+                                    "selected"
+                                );
+    
+                                // Update current text
+                                const current =
+                                    select.querySelector(
+                                        ".current"
+                                    );
+    
+                                if (current) {
+    
+                                    current.innerText =
+                                        this.innerText;
+                                }
+    
+                                calculateArea();
+                                calculatePrice();
+                            }
+                        );
+                    });
+            });
+    
+        // ==========================
+        // ADD EXTRA AREA FIELDS
+        // ==========================
+        if (addBtn) {
+    
+            addBtn.addEventListener("click", () => {
+    
+                if (
+                    index >= areaOptions.length
+                ) {
+    
+                    addBtn.disabled = true;
+    
+                    addBtn.innerText =
+                        "All Areas Added";
+    
+                    return;
+                }
+    
+                const area =
+                    areaOptions[index];
+    
+                const html = `
+                    <div class="box grid-2 gap-30">
+    
+                        <fieldset class="box-fieldset">
+    
+                            <label>
+                                ${area.label}
+                            </label>
+    
+                            <input
+                                type="number"
+                                name="${area.name}"
+                                class="form-control"
+                            >
+    
+                        </fieldset>
+    
+                        <fieldset class="box-fieldset">
+    
+                            <label>
+                                Area Unit
+                            </label>
+    
+                            <div class="nice-select"
+                                 tabindex="0">
+    
+                                <span class="current">
+                                    sq.ft.
+                                </span>
+    
+                                <ul class="list">
+    
+                                    <li data-value="sqft"
+                                        class="option selected">
+                                        sq.ft.
+                                    </li>
+    
+                                    <li data-value="sqyard"
+                                        class="option">
+                                        sq.yards
+                                    </li>
+    
+                                    <li data-value="sqm"
+                                        class="option">
+                                        sq.m.
+                                    </li>
+    
+                                    <li data-value="acre"
+                                        class="option">
+                                        acre
+                                    </li>
+    
+                                    <li data-value="marla"
+                                        class="option">
+                                        marla
+                                    </li>
+    
+                                    <li data-value="cents"
+                                        class="option">
+                                        cents
+                                    </li>
+    
+                                </ul>
+                            </div>
+    
+                        </fieldset>
+    
                     </div>
-                </fieldset>
-            </div>
-        `;
-
-        container.insertAdjacentHTML("beforeend", html);
-
-        index++;
-    });
-
-    const areaInput = document.getElementById("carpet_area");
-    const pricePerUnit = document.getElementById("price_per_unit");
-    const totalPrice = document.getElementById("price");
-
-    // Conversion (optional)
-    const unitConversion = {
-        sqft: 1,
-        sqyard: 9,
-        sqm: 10.7639,
-        acre: 43560,
-        marla: 272.25,
-        cents: 435.6
-    };
-
-    function getSelectedUnit() {
-        const selected = document.querySelector(
-            "#carpet_area_unit .option.selected"
-        );
-        return selected ? selected.dataset.value : "sqft";
-    }
-
-    function calculatePrice() {
-        const area = parseFloat(areaInput.value) || 0;
-        const price = parseFloat(pricePerUnit.value) || 0;
-        const unit = getSelectedUnit();
-
-        // If NO conversion needed → use this:
-        const total = area * price;
-
-        // If you WANT conversion → use this instead:
-        // const total = area * unitConversion[unit] * price;
-
-        totalPrice.value = Math.round(total);
-    }
-
-    // Input events
-    areaInput.addEventListener("input", calculatePrice);
-    pricePerUnit.addEventListener("input", calculatePrice);
-
-    // Handle nice-select click
-    document.querySelectorAll("#carpet_area_unit .option").forEach(option => {
-        option.addEventListener("click", () => {
-            // Remove old selected
-            document.querySelectorAll("#carpet_area_unit .option")
-                .forEach(o => o.classList.remove("selected"));
-
-            // Add new selected
-            option.classList.add("selected");
-
-            // Update UI text
-            document.querySelector("#carpet_area_unit .current").innerText = option.innerText;
-
-            calculatePrice();
-        });
+                `;
+    
+                container.insertAdjacentHTML(
+                    "beforeend",
+                    html
+                );
+    
+                index++;
+            });
+        }
+    
+        // ==========================
+        // GLOBAL ACCESS
+        // ==========================
+        window.togglePlotFields =
+            togglePlotFields;
+    
     });
 </script>
